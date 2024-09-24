@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+
+DAEMON=/usr/bin/centralized-relay
+
+RLY_CMD="exec $DAEMON"
+
+exec s6-setuidgid jvb /bin/bash -c "$RLY_CMD"
