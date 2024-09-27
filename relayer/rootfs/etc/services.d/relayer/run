@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-DAEMON=/usr/bin/centralized-relay
+DAEMON="/usr/bin/centralized-relay start"
 
 RLY_CMD="exec $DAEMON"
 
