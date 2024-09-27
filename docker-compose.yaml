@@ -1,0 +1,47 @@
+services:
+  relayer:
+    image: iconcommunity/centralized-relay:${RELAYER_IMAGE_VERSION:-latest}
+    restart: ${RESTART_POLICY:-unless-stopped}
+    volumes:
+      - ${CONFIG:-./data}/relayer:/home/${RELAYER_USER:-relayer}/.centralized-relay
+    labels:
+      service: "centralized-relay"
+    environment:
+      - SOCKET_PATH=${SOCKET_PATH:-/home/${RELAYER_USER:-relayer}/.centralized-relay/relay.sock}
+    networks:
+      relayer:
+  dashboard:
+    image: iconcommunity/relayer-admin-dasboard:${DASHBOARD_IMAGE_VERSION:-latest}
+    ports:
+      - ${SERVICE_PORT:-3000}
+    volumes:
+      - ${CONFIG}/dashboard:/config
+    labels:
+      service: "admin-dashboard"
+    environment:
+      - SERVICE_PORT
+    depends_on:
+      - relayer
+    networks:
+      relayer:
+  web:
+    image: iconcommunity/nginx:${NGINX_IMAGE_VERSION:-latest}
+    restart: ${RESTART_POLICY:-unless-stopped}
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ${CONFIG}/web:/config:Z
+      - ${CONFIG}/web/crontabs:/var/spool/cron/crontabs:Z
+    labels:
+      service: "nginx-web"
+    environment:
+      - SERVICE_HOST=${SERVICE_HOST:-dashboard:${SERVICE_PORT:-3000}}
+      - LETSENCRYPT_USE_STAGING=${LETSENCRYPT_USE_STAGING:-1}
+      - LETSENCRYPT_DOMAIN
+    depends_on:
+      - dashboard
+    networks:
+      relayer:
+networks:
+  relayer:

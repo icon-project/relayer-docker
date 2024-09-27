@@ -1,7 +1,7 @@
 ARG ICON_REPO=iconcommunity
 ARG BASE_TAG=latest
 ARG RELAYER_VERSION=latest
-FROM ${ICON_REPO}/base:${BASE_TAG}
+FROM ${ICON_REPO}/relay-base:${BASE_TAG}
 
 LABEL org.opencontainers.image.title="Centralized Relay"
 LABEL org.opencontainers.image.description="Centralized relay"

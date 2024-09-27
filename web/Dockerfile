@@ -1,12 +1,12 @@
 ARG ICON_REPO=iconcommunity
 ARG BASE_TAG=latest
-FROM ${ICON_REPO}/base:${BASE_TAG}
+FROM ${ICON_REPO}/relayer-base:${BASE_TAG}
 
 LABEL org.opencontainers.image.title="Admin Dashboard"
 LABEL org.opencontainers.image.description="Control panel to control and operate relayers remotly"
 LABEL org.opencontainers.image.url="https://icon.community"
-LABEL org.opencontainers.image.source="https://github.com/"
-LABEL org.opencontainers.image.documentation="https://github.com"
+LABEL org.opencontainers.image.source="https://github.com/icon-project/relayer-admin-dashboard"
+LABEL org.opencontainers.image.documentation="https://github.com/relayer-admin-dashboard/wiki"
 
 ADD https://raw.githubusercontent.com/acmesh-official/acme.sh/3.0.7/acme.sh /opt
 COPY rootfs/ /
