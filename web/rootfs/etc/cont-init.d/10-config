@@ -91,7 +91,7 @@ echo "Using Nginx resolver: =$NGINX_RESOLVER="
 # copy config files
 tpl /defaults/nginx.conf > /config/nginx/nginx.conf
 
-tpl /defaults/meet.conf > /config/nginx/dashboard.conf
+tpl /defaults/dashboard.conf > /config/nginx/dashboard.conf
 
 tpl /defaults/ssl.conf > /config/nginx/ssl.conf
 
