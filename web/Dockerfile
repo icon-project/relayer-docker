@@ -1,6 +1,6 @@
 ARG ICON_REPO=iconcommunity
 ARG BASE_TAG=latest
-FROM ${ICON_REPO}/relayer-base:${BASE_TAG}
+FROM ${ICON_REPO}/relay-base:${BASE_TAG}
 
 LABEL org.opencontainers.image.title="Admin Dashboard"
 LABEL org.opencontainers.image.description="Control panel to control and operate relayers remotly"
