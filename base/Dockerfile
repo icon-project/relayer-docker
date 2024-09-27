@@ -1,6 +1,5 @@
 FROM docker.io/library/debian:bookworm-slim
 
-ARG RELEASE=stable
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
 
 COPY rootfs /
