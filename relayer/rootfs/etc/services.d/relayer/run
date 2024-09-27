@@ -4,4 +4,4 @@ DAEMON=/usr/bin/centralized-relay
 
 RLY_CMD="exec $DAEMON"
 
-exec s6-setuidgid jvb /bin/bash -c "$RLY_CMD"
+exec s6-setuidgid relayer /bin/bash -c "$RLY_CMD"
