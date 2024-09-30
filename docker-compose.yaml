@@ -3,23 +3,25 @@ services:
     image: iconcommunity/centralized-relay:${RELAYER_IMAGE_VERSION:-latest}
     restart: ${RESTART_POLICY:-unless-stopped}
     volumes:
-      - ${CONFIG}/relayer:/home/${RELAYER_USER:-relayer}/.centralized-relay
+      - ${CONFIG}/relayer:/home/${RELAYER_USER:-relayer}/.centralized-relay:Z
+      - ${CONFIG_PATH:-./config.yaml}:/home/${RELAYER_USER:-relayer}/.centralized-relay/config.yaml:ro
     labels:
       service: "centralized-relay"
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_SESSION_TOKEN
-      - AWS_DEFAULT_REGION
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
       - SOCKET_PATH=${SOCKET_PATH:-/home/${RELAYER_USER:-relayer}/.centralized-relay/relay.sock}
     networks:
       relayer:
   dashboard:
     image: iconcommunity/relay-admin-dashboard:${DASHBOARD_IMAGE_VERSION:-latest}
+    restart: ${RESTART_POLICY:-unless-stopped}
     ports:
       - ${SERVICE_PORT:-3000}
     volumes:
-      - ${CONFIG}/dashboard:/config
+      - ${SOCKET_PATH:-${CONFIG}/relayer/.centralized-relay/relay.sock}:/home/${RELAYER_USER:-relayer}/.centralized-relay/relay.sock
     labels:
       service: "admin-dashboard"
     environment:
