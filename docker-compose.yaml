@@ -23,7 +23,7 @@ services:
     volumes:
       - ${SOCKET_PATH:-${CONFIG}/relayer/.centralized-relay/relay.sock}:/home/${RELAYER_USER:-relayer}/.centralized-relay/relay.sock
       - ${USERS_LIST_FILE_PATH:-./users.json}:/home/dashboard/users.json
-      - ${RELAYERS_LIST_FILE_PATH:./relayers.json}:/home/dashboard/relayer.json
+      - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/home/dashboard/relayer.json
     labels:
       service: "admin-dashboard"
     environment:
