@@ -1,6 +1,10 @@
 #!/usr/bin/with-contenv bash
 
-DAEMON="/usr/bin/centralized-relay start"
+USER="relayer"
+
+HOME="$(eval echo ~$USER)"
+
+DAEMON="$(which centralized-relay) start --home $HOME"
 
 RLY_CMD="exec $DAEMON"
 

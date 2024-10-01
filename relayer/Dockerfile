@@ -27,6 +27,4 @@ RUN \
   tar -zxf centralized-relay_${RELAYER_VERSION}_linux_${ARCH}.tar.gz && \
   mv centralized-relay /usr/bin && \
   rm centralized-relay_${RELAYER_VERSION}_linux_${ARCH}.tar.gz && \
-  useradd -m relayer
-
-WORKDIR /home/relayer
+  useradd -mU relayer -s /bin/bash

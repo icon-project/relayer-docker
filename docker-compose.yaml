@@ -22,8 +22,8 @@ services:
       - ${SERVICE_PORT:-3000}
     volumes:
       - ${SOCKET_PATH:-${CONFIG}/relayer/.centralized-relay/relay.sock}:/home/${RELAYER_USER:-relayer}/.centralized-relay/relay.sock
-      - ${USERS_LIST_FILE_PATH:-./users.json}:/home/dashboard/users.json
-      - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/home/dashboard/relayer.json
+      - ${USERS_LIST_FILE_PATH:-./users.json}:/home/dashboard/users.json:ro
+      - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/home/dashboard/relayer.json:ro
     labels:
       service: "admin-dashboard"
     environment:
@@ -51,7 +51,7 @@ services:
     labels:
       service: "nginx-web"
     environment:
-      - SERVICE_HOST=${SERVICE_HOST:-dashboard:${SERVICE_PORT:-3000}}
+      - SERVICE_HOST=${SERVICE_HOST:-http://dashboard:${SERVICE_PORT:-3000}}
       - LETSENCRYPT_USE_STAGING=${LETSENCRYPT_USE_STAGING:-1}
       - LETSENCRYPT_DOMAIN
     depends_on:
