@@ -12,7 +12,7 @@ services:
       - AWS_SECRET_ACCESS_KEY
       - AWS_SESSION_TOKEN
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
-      - SOCKET_PATH=${SOCKET_PATH:-/home/${RELAYER_USER:-relayer}/.centralized-relay/relay.sock}
+      - SOCKET_PATH=${SOCKET_PATH:-${CONFIG}/relayer/${RELAYER_USER:-relayer}/.centralized-relay/relay.sock}
     networks:
       relayer:
   dashboard:
@@ -34,7 +34,7 @@ services:
       - NEXTAUTH_URL
       - NEXTAUTH_SECRET
       - NEXT_XCALLSCAN_BASE_URL=${NEXT_XCALLSCAN_BASE_URL:-https://xcallscan.xyz/api}
-      - NEXT_RELAYER_SOCKET_PATH=${SOCKET_PATH:-/home/relayer/.centralized-relay/relayer.sock}
+      - NEXT_RELAYER_SOCKET_PATH=${SOCKET_PATH:-${CONFIG}/relayer/.centralized-relay/relay.sock}
     depends_on:
       - relayer
     networks:
@@ -51,6 +51,7 @@ services:
     labels:
       service: "nginx-web"
     environment:
+      - ENABLE_LETSENCRYPT
       - SERVICE_HOST=${SERVICE_HOST:-http://dashboard:${SERVICE_PORT:-3000}}
       - LETSENCRYPT_USE_STAGING=${LETSENCRYPT_USE_STAGING:-1}
       - LETSENCRYPT_DOMAIN
