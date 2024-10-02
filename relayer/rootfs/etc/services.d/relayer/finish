@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-SOCKET_PATH="${SOCKET_PATH}:-/tmp/relayer.sock}"
+SOCKET_PATH="${SOCKET_PATH:-/tmp/relayer.sock}"
 
 # delete the socket file if it exists
 if [ -S "${SOCKET_PATH}" ]; then
