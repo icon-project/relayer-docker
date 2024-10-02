@@ -22,9 +22,9 @@ RUN \
   "arm64") ARCH=arm64 ;; \
   *) echo "unsupported architecture"; exit 1 ;; \
   esac && \
-  RELAYER_VERSION="$(curl 'https://api.github.com/repos/icon-project/centralized-relay/releases/latest' -s | jq -r '.tag_name' | cut -c2-)"; \
+  RELAYER_VERSION=1.6.1-rc1; \
   wget https://github.com/icon-project/centralized-relay/releases/download/v${RELAYER_VERSION}/centralized-relay_${RELAYER_VERSION}_linux_${ARCH}.tar.gz && \
   tar -zxf centralized-relay_${RELAYER_VERSION}_linux_${ARCH}.tar.gz && \
-  mv centralized-relay /usr/bin && \
+  mv centralized-relay_${RELAYER_VERSION}_linux_${ARCH}/centralized-relay /usr/bin && \
   rm centralized-relay_${RELAYER_VERSION}_linux_${ARCH}.tar.gz && \
   useradd -mU relayer -s /bin/bash

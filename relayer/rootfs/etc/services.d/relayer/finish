@@ -1,18 +1,8 @@
 #!/usr/bin/with-contenv bash
 
-USER="relayer"
-
-HOME="$(eval echo ~$USER)"
-
-DAEMON="/usr/bin/centralized-relay start --home $HOME"
-
-RLY_CMD="exec $DAEMON"
-
 SOCKET_PATH="${SOCKET_PATH}:-/tmp/relayer.sock}"
 
 # delete the socket file if it exists
 if [ -S "${SOCKET_PATH}" ]; then
     rm -f "${SOCKET_PATH}"
 fi
-
-exec s6-setuidgid relayer /bin/bash -c "$RLY_CMD"
