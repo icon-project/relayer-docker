@@ -12,7 +12,7 @@ services:
       - AWS_SECRET_ACCESS_KEY
       - AWS_SESSION_TOKEN
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
-      - SOCKET_PATH=${SOCKET_PATH:-/home/${RELAYER_USER:-relayer}/.centralized-relay/relay.sock}
+      - relay-socket:/home/${RELAYER_USER:-relayer}/.centralized-relay/relay.sock
     networks:
       relayer:
   dashboard:
@@ -21,7 +21,7 @@ services:
     ports:
       - ${SERVICE_PORT:-3000}
     volumes:
-      - ${SOCKET_PATH:-${CONFIG}/relayer/.centralized-relay/relay.sock}:/tmp/relay.sock
+      - relay-socket:/tmp/relay.sock
       - ${USERS_LIST_FILE_PATH:-./users.json}:/home/dashboard/users.json:ro
       - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/home/dashboard/relayer.json:ro
     labels:
@@ -61,3 +61,6 @@ services:
       relayer:
 networks:
   relayer:
+
+volumes:
+  relay-socket:
