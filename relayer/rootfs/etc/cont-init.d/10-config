@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv bash
+
+USER="${RELAYER_USER:-relayer}"
+
+HOME="$(eval echo ~$USER)"
+
+DATA_DIR="${DB_PATH:-$HOME/.centralized-relay/data}"
+
+mkdir -p "$DATA_DIR"
+
+chown -R $USER:$USER "$DATA_DIR"
