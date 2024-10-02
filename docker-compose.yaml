@@ -4,7 +4,7 @@ services:
     restart: ${RESTART_POLICY:-unless-stopped}
     volumes:
       - ${CONFIG}/relayer:/home/${RELAYER_USER:-relayer}/.centralized-relay:Z
-      - ${CONFIG_PATH:-./config.yaml}:/home/${RELAYER_USER:-relayer}/.centralized-relay/config.yaml:ro
+      - ${CONFIG_PATH:-./config.yaml}:/home/${RELAYER_USER:-relayer}/config.yaml:ro
     labels:
       service: "centralized-relay"
     environment:

@@ -4,7 +4,7 @@ USER="${RELAYER_USER:-relayer}"
 
 HOME="$(eval echo ~$USER)"
 
-DATA_DIR="${DB_PATH:-$HOME/.centralized-relay/data}"
+DATA_DIR="${DATA_DIR:-$HOME/.centralized-relay}"
 
 mkdir -p "$DATA_DIR"
 
