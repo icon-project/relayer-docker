@@ -5,6 +5,7 @@ services:
     volumes:
       - ${CONFIG}/relayer:/home/${RELAYER_USER:-relayer}/.centralized-relay:Z
       - ${CONFIG_PATH:-./config.yaml}:/home/${RELAYER_USER:-relayer}/config.yaml:ro
+      - relay-socket:/tmp/relay
     labels:
       service: "centralized-relay"
     environment:
@@ -12,7 +13,7 @@ services:
       - AWS_SECRET_ACCESS_KEY
       - AWS_SESSION_TOKEN
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
-      - relay-socket:/home/${RELAYER_USER:-relayer}/.centralized-relay/relay.sock
+      - SOCKET_PATH=/tmp/relay/relay.sock
     networks:
       relayer:
   dashboard:
@@ -21,7 +22,7 @@ services:
     ports:
       - ${SERVICE_PORT:-3000}
     volumes:
-      - relay-socket:/tmp/relay.sock
+      - relay-socket:/tmp/relay
       - ${USERS_LIST_FILE_PATH:-./users.json}:/home/dashboard/users.json:ro
       - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/home/dashboard/relayer.json:ro
     labels:
@@ -34,7 +35,7 @@ services:
       - NEXTAUTH_URL
       - NEXTAUTH_SECRET
       - NEXT_XCALLSCAN_BASE_URL=${NEXT_XCALLSCAN_BASE_URL:-https://xcallscan.xyz/api}
-      - NEXT_RELAYER_SOCKET_PATH=/tmp/relay.sock
+      - NEXT_RELAYER_SOCKET_PATH=/tmp/relay/relay.sock
     depends_on:
       - relayer
     networks:
