@@ -17,7 +17,7 @@ services:
     networks:
       relayer:
   dashboard:
-    image: iconcommunity/relay-admin-dashboard:${DASHBOARD_IMAGE_VERSION:-latest}
+    image: iconcommunity/relayer-admin-dashboard:${DASHBOARD_IMAGE_VERSION:-latest}
     restart: ${RESTART_POLICY:-unless-stopped}
     ports:
       - ${SERVICE_PORT:-3000}
