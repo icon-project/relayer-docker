@@ -17,6 +17,8 @@ This is relay infrastructure on docker.
     docker-compose up -d
   ```
 
+
+
 ## Environment variables
 
 - `CONFIG`: The path to the configuration and data directory. Default: `/.data`
@@ -24,3 +26,5 @@ This is relay infrastructure on docker.
 - `ENABLE_LETSENCRYPT`: Enable Let's Encrypt. Default: `false`
 - `LETSENCRYPT_DOMAIN`: The domain for Let's Encrypt
 - `LETSENCRYPT_EMAIL`: The email for Let's Encrypt
+- `RELAYERS_LIST_FILE_PATH`: List of relayers to connect to.
+- `USERS_LIST_FILE_PATH`: List of users available for authentication.
