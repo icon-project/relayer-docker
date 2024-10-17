@@ -26,6 +26,8 @@ This is relay infrastructure on docker.
 - `LETSENCRYPT_EMAIL`: The email for Let's Encrypt
 - `RELAYERS_LIST_FILE_PATH`: List of relayers to connect to.
 - `USERS_LIST_FILE_PATH`: List of users available for authentication.
+- `NEXT_PUBLIC_APP_API_ENDPOINT`: Own api endpoint. Example: `https://crly.ibriz.ai/api`
+- `NEXT_XCALLSCAN_BASE_URL`: Xcall scan api to use: default: `https://xcallscan.xyz/api`
 
 ## Configuration
 
@@ -53,6 +55,8 @@ The example of the inter-connected relayers configuration file is as follows:
 `auth`: The authentication credentials for the relayer.
 
 ### Users
+
+User list are stored in a static file.
 
 The example of the users configuration file is as follows:
 
