@@ -23,8 +23,9 @@ services:
       - ${SERVICE_PORT:-3000}
     volumes:
       - relay-socket:${SOCKET_DIR:-/var/run/relayer}
-      - ${USERS_LIST_FILE_PATH:-./users.json}:/home/dashboard/users.json:ro
-      - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/home/dashboard/relayer.json:ro
+      - ${USERS_LIST_FILE_PATH:-./users.json}:/usr/src/app/users.json:ro
+      - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/usr/src/app/relayer.json:ro
+      - ${CONFIG}/dashboard:/usr/src/app/.next:RW
     labels:
       service: "admin-dashboard"
     environment:
