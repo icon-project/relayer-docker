@@ -11,7 +11,6 @@ services:
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
-      - AWS_SESSION_TOKEN
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
       - SOCKET_PATH=${SOCKET_DIR:-/var/run/relayer}/relay.sock
     networks:
@@ -25,7 +24,7 @@ services:
       - relay-socket:${SOCKET_DIR:-/var/run/relayer}
       - ${USERS_LIST_FILE_PATH:-./users.json}:/usr/src/app/users.json:ro
       - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/usr/src/app/relayer.json:ro
-      - ${CONFIG}/dashboard:/usr/src/app/.next:RW
+      - ${CONFIG}/dashboard:/usr/src/app/.next/cache:RW
     labels:
       service: "admin-dashboard"
     environment:
