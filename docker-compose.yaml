@@ -25,6 +25,8 @@ services:
       - ${USERS_LIST_FILE_PATH:-./users.json}:/usr/src/app/users.json:ro
       - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/usr/src/app/relayers.json:ro
       - ${CONFIG}/dashboard/cache:/usr/src/app/.next/cache:Z
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
     labels:
       service: "admin-dashboard"
     environment:
