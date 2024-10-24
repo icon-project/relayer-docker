@@ -23,8 +23,8 @@ services:
     volumes:
       - relay-socket:${SOCKET_DIR:-/var/run/relayer}
       - ${USERS_LIST_FILE_PATH:-./users.json}:/usr/src/app/users.json:ro
-      - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/usr/src/app/relayer.json:ro
-      - ${CONFIG}/dashboard:/usr/src/app/.next/cache:RW
+      - ${RELAYERS_LIST_FILE_PATH:-./relayers.json}:/usr/src/app/relayers.json:ro
+      - ${CONFIG}/dashboard/cache:/usr/src/app/.next/cache:Z
     labels:
       service: "admin-dashboard"
     environment:
