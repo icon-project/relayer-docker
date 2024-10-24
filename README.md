@@ -28,6 +28,9 @@ This is relay infrastructure on docker.
 - `USERS_LIST_FILE_PATH`: List of users available for authentication.
 - `NEXT_PUBLIC_APP_API_ENDPOINT`: Own api endpoint. Example: `https://crly.ibriz.ai/api`
 - `NEXT_XCALLSCAN_BASE_URL`: Xcall scan api to use: default: `https://xcallscan.xyz/api`
+- `AWS_ACCESS_KEY_ID`: AWS access key id [optional]
+- `AWS_SECRET_ACCESS_KEY`: AWS secret access key [optional]
+- `AWS_DEFAULT_REGION`: AWS region [ default: `us-east-1`]
 
 ## Configuration
 
