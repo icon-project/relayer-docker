@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+
+USER="dashboard"
+
+DAEMON="/usr/share/dashboard/start.sh"
+
+exec s6-setuidgid $USER /bin/bash -c "${DAEMON}"

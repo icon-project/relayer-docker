@@ -1,0 +1,14 @@
+{{ $DEAFULT_ADMIN_EMAIL := .Env.DEAFULT_ADMIN_EMAIL | default "admin@icon.community" }}
+{{ $DEAFULT_ADMIN_PASSWORD := .Env.DEAFULT_ADMIN_PASSWORD | default "p@ssw0rd" }}
+{{ $DEAFULT_ADMIN_COMPANY := .Env.DEAFULT_ADMIN_COMPANY | default "Venture23 Inc." }}
+{{ $DEAFULT_ADMIN_DESIGNATION := .Env.DEAFULT_ADMIN_DESIGNATION | default "Project Manager" }}
+
+[
+  {
+    "id": "1",
+    "email": "{{ $DEAFULT_ADMIN_EMAIL }}",
+    "password": "{{ $DEAFULT_ADMIN_PASSWORD }}",
+    "company": "{{ $DEAFULT_ADMIN_COMPANY }}",
+    "designation": "{{ $DEAFULT_ADMIN_DESIGNATION }}"
+  }
+]

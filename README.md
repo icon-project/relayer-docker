@@ -4,9 +4,8 @@ This is relay infrastructure on docker.
 
 ## Services
 
-- admin dashboard
 - relay: ./relayer
-- web: ./web
+- admin dashboard: ./admin-dashboard
 
 ## How to use
 

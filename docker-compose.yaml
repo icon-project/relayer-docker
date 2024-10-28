@@ -16,31 +16,7 @@ services:
     networks:
       relayer:
   dashboard:
-    image: iconcommunity/relayer-admin-dashboard:${DASHBOARD_IMAGE_VERSION:-latest}
-    restart: ${RESTART_POLICY:-unless-stopped}
-    ports:
-      - ${SERVICE_PORT:-3000}
-    volumes:
-      - relay-socket:${SOCKET_DIR:-/var/run/relayer}
-      - ${CONFIG}/dashboard:/usr/src/app/.next:Z
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-    labels:
-      service: "admin-dashboard"
-    environment:
-      - PORT=${SERVICE_PORT:-3000}
-      - NEXT_PUBLIC_API_RETRY_INTERVAL_IN_SECONDS=${NEXT_PUBLIC_API_RETRY_INTERVAL_IN_SECONDS:-5}
-      - NEXT_PUBLIC_API_MAX_RETRY=${NEXT_PUBLIC_API_MAX_RETRY:-5}
-      - NEXTAUTH_URL
-      - NEXTAUTH_SECRET
-      - NEXT_XCALLSCAN_BASE_URL=${NEXT_XCALLSCAN_BASE_URL:-https://xcallscan.xyz/api}
-      - NEXT_RELAYER_SOCKET_PATH=${SOCKET_DIR:-/var/run/relayer}/relay.sock
-    depends_on:
-      - relayer
-    networks:
-      relayer:
-  web:
-    image: iconcommunity/admin-dashboard-nginx:${NGINX_IMAGE_VERSION:-latest}
+    image: iconcommunity/relayer-admin-dashboard:${NGINX_IMAGE_VERSION:-latest}
     restart: ${RESTART_POLICY:-unless-stopped}
     ports:
       - "${HTTP_PORT:-80}:80"
@@ -48,16 +24,29 @@ services:
     volumes:
       - ${CONFIG}/web:/config:Z
       - ${CONFIG}/web/crontabs:/var/spool/cron/crontabs:Z
+      - ${CONFIG}/dashboard/cache:/usr/share/dashboard/.next/cache:Z
+      - ${CONFIG}/dashboard/data:/data:Z
+      - relay-socket:${SOCKET_DIR:-/var/run/relayer}
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
     labels:
-      service: "nginx-web"
+      service: "relayer-admin-dashboard"
     environment:
       - ENABLE_LETSENCRYPT
-      - SERVICE_HOST=${SERVICE_HOST:-http://dashboard:${SERVICE_PORT:-3000}}
+      - DASHBOARD_PORT
       - LETSENCRYPT_USE_STAGING=${LETSENCRYPT_USE_STAGING:-1}
       - LETSENCRYPT_DOMAIN
       - LETSENCRYPT_EMAIL
+      - NEXT_PUBLIC_API_RETRY_INTERVAL_IN_SECONDS=${NEXT_PUBLIC_API_RETRY_INTERVAL_IN_SECONDS:-5}
+      - NEXT_PUBLIC_API_MAX_RETRY=${NEXT_PUBLIC_API_MAX_RETRY:-5}
+      - NEXTAUTH_URL
+      - NEXTAUTH_SECRET
+      - NEXT_XCALLSCAN_BASE_URL=${NEXT_XCALLSCAN_BASE_URL:-https://xcallscan.xyz/api}
+      - NEXT_RELAYER_SOCKET_PATH=${SOCKET_DIR:-/var/run/relayer}/relay.sock
+      - NEXT_RELAYERS_MAP_FILE_PATH=${NEXT_RELAYERS_MAP_FILE_PATH:-/data/database/relayers.json}
+      - NEXT_USERS_MAP_FILE_PATH=${NEXT_USERS_MAP_FILE_PATH:-/data/database/users.json}
     depends_on:
-      - dashboard
+      - relayer
     networks:
       relayer:
 networks:
