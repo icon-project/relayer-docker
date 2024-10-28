@@ -4,7 +4,7 @@ USER="relayer"
 
 HOME="$(eval echo ~$USER)"
 
-DAEMON="/usr/bin/centralized-relay start --home $HOME --config $HOME/config.yaml"
+DAEMON="/usr/bin/centralized-relay start --home $HOME/data --socket-path $SOCKET_PATH"
 
 RLY_CMD="exec $DAEMON"
 

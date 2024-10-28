@@ -30,3 +30,5 @@ RUN \
   mv centralized-relay_${RELAYER_VERSION}_linux_${ARCH}/centralized-relay /usr/bin && \
   rm centralized-relay_${RELAYER_VERSION}_linux_${ARCH}.tar.gz && \
   useradd -mU relayer -s /bin/bash
+
+VOLUME /data
