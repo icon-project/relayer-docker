@@ -20,7 +20,7 @@ RUN apt-dpkg-wrap apt-get update && \
   wget https://github.com/icon-project/relayer-admin-dashboard/releases/download/v${DASHBOARD_VERSION}/relayer-admin-dashboard.deb && \
   apt-dpkg-wrap dpkg -i relayer-admin-dashboard.deb && \
   apt-dpkg-wrap apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  rm -rf relayer-admin-dashboard.deb /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 EXPOSE 80 443
 
