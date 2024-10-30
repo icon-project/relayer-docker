@@ -29,7 +29,8 @@ You can quickly set up the relayer infrastructure using the provided install scr
    Execute the following command to download and run the install script:
 
    ```bash
-   curl -L https://raw.githubusercontent.com/icon-project/relayer-docker/main/install.sh | bash
+   curl -L https://raw.githubusercontent.com/icon-project/relayer-docker/main/install.sh -o /tmp/install.sh && bash /tmp/install.sh
+   ```
 
 2. Provide Configuration Inputs
 

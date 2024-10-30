@@ -96,12 +96,15 @@ fi
 
 # RELAYER CONFIG_PATH
 read -p "Enter relayer config (path to config.yaml) [./config.yaml]: " CONFIG_PATH
+CONFIG_PATH=${CONFIG_PATH:-./config.yaml}
 
 # Check if CONFIG_PATH exists
 if [[ ! -f "${CONFIG_PATH}" ]]; then
     echo "Error: Configuration file '${CONFIG_PATH}' does not exist."
     exit 1
 fi
+echo "Copying ${CONFIG_PATH} to ${CONFIG_DIR}/config.yaml"
+cp "${CONFIG_PATH}" "${CONFIG_DIR}/config.yaml"
 
 # Create .env file
 cat <<EOF > "${CONFIG_DIR}/.env"
@@ -118,7 +121,7 @@ ENABLE_LETSENCRYPT=${ENABLE_LETSENCRYPT}
 LETSENCRYPT_USE_STAGING=${LETSENCRYPT_USE_STAGING}
 LETSENCRYPT_DOMAIN=${LETSENCRYPT_DOMAIN}
 LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-CONFIG_PATH=${CONFIG_PATH:-./config.yaml}
+CONFIG_PATH=${CONFIG_PATH}
 EOF
 
 # Navigate to configuration directory
