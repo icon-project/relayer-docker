@@ -101,5 +101,6 @@ mkdir -p /data/database
 
 chown -R dashboard:dashboard /data
 
-tpl /defaults/users.json > /data/database/users.json
-tpl /defaults/relayers.json > /data/database/relayers.json
+[[ -f /data/database/users.json ]] || tpl /defaults/users.json > /data/database/users.json
+
+[[ -f /data/database/relayers.json ]] || tpl /defaults/relayers.json > /data/database/relayers.json
