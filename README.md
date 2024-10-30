@@ -13,7 +13,7 @@ This repository provides a Docker-based setup for the relayer infrastructure, in
 
 Ensure that the following are installed on your system:
 
-- **Docker**: [Get Docker](https://docs.docker.com/get-docker/)
+- **Docker**: [Get Docker](https://docs.docker.com/engine/install/)
 - **Docker Compose**: Included with Docker Desktop or install separately for your platform.
 - **curl**
 - **openssl**
