@@ -46,6 +46,8 @@ services:
       - NEXT_RELAYER_SOCKET_PATH=${SOCKET_DIR:-/var/run/relayer}/relay.sock
       - NEXT_RELAYERS_MAP_FILE_PATH=${NEXT_RELAYERS_MAP_FILE_PATH:-/data/database/relayers.json}
       - NEXT_USERS_MAP_FILE_PATH=${NEXT_USERS_MAP_FILE_PATH:-/data/database/users.json}
+      - DEAFULT_ADMIN_EMAIL
+      - DEAFULT_ADMIN_PASSWORD
     depends_on:
       - relayer
     networks:
