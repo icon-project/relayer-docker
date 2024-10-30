@@ -76,10 +76,10 @@ NEXTAUTH_SECRET=$(openssl rand -hex 32)
 # Let's Encrypt Configuration
 read -p "Enable Let's Encrypt? (yes/no) [no]: " ENABLE_LETSENCRYPT
 ENABLE_LETSENCRYPT=${ENABLE_LETSENCRYPT:-no}
-if [[ "${ENABLE_LETSENCRYPT}" == "yes" || "${ENABLE_LETSENCRYPT,,}" == "y" ]]; then
+if [[ "${ENABLE_LETSENCRYPT}" == "yes" || "${ENABLE_LETSENCRYPT}" == "y" ]]; then
     ENABLE_LETSENCRYPT=1
-    read -p "Use Let's Encrypt Staging Environment? (yes/no) [yes]: " LETSENCRYPT_USE_STAGING
-    LETSENCRYPT_USE_STAGING=${LETSENCRYPT_USE_STAGING:-yes}
+    read -p "Use Let's Encrypt Staging Environment? (yes/no) [no]: " LETSENCRYPT_USE_STAGING
+    LETSENCRYPT_USE_STAGING=${LETSENCRYPT_USE_STAGING:-no}
     if [[ "${LETSENCRYPT_USE_STAGING}" == "yes" || "${LETSENCRYPT_USE_STAGING}" == "y" ]]; then
         LETSENCRYPT_USE_STAGING=1
     else
