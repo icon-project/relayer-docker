@@ -96,7 +96,6 @@ fi
 
 # RELAYER CONFIG_PATH
 read -p "Enter relayer config (path to config.yaml) [./config.yaml]: " CONFIG_PATH
-CONFIG_PATH=${CONFIG_PATH:-./config.yaml}
 
 # Check if CONFIG_PATH exists
 if [[ ! -f "${CONFIG_PATH}" ]]; then
@@ -119,7 +118,7 @@ ENABLE_LETSENCRYPT=${ENABLE_LETSENCRYPT}
 LETSENCRYPT_USE_STAGING=${LETSENCRYPT_USE_STAGING}
 LETSENCRYPT_DOMAIN=${LETSENCRYPT_DOMAIN}
 LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-CONFIG_PATH=${CONFIG_PATH}
+CONFIG_PATH=${CONFIG_PATH:-./config.yaml}
 EOF
 
 # Navigate to configuration directory
