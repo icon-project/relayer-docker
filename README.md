@@ -56,7 +56,7 @@ You can quickly set up the relayer infrastructure using the provided install scr
 
         If enabled:
         - Use Let's Encrypt Staging
-        - Environment? (yes or no, default: yes)
+          - Environment? (yes or no, default: no)
         - Let's Encrypt Domain
         - Let's Encrypt Email
 
