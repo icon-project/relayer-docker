@@ -46,6 +46,10 @@ curl -L "${REPO_URL}/${DOCKER_COMPOSE_FILE}" -o "${CONFIG_DIR}/${DOCKER_COMPOSE_
 
 # Prompt user for environment variables
 
+## data directory
+read -p "Enter Data Directory [./data]: " DATA_DIR
+CONFIG=${DATA_DIR:-./data}
+
 # AWS Credentials
 read -p "Enter AWS Access Key ID: " AWS_ACCESS_KEY_ID
 read -p "Enter AWS Secret Access Key: " AWS_SECRET_ACCESS_KEY
@@ -108,6 +112,7 @@ cp "${CONFIG_PATH}" "${CONFIG_DIR}/config.yaml"
 
 # Create .env file
 cat <<EOF > "${CONFIG_DIR}/.env"
+CONFIG=${CONFIG}
 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
 AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
