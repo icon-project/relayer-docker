@@ -33,6 +33,17 @@ if [ ${#MISSING_COMMANDS[@]} -ne 0 ]; then
     exit 1
 fi
 
+# Check if user is in the docker group
+if ! groups $USER | grep &>/dev/null "\bdocker\b"; then
+    read -p "User is not in the docker group. Add user to docker group? (yes/no) [no]: " ADD_DOCKER_GROUP
+    ADD_DOCKER_GROUP=${ADD_DOCKER_GROUP:-no}
+    if [[ "${ADD_DOCKER_GROUP}" == "yes" || "${ADD_DOCKER_GROUP}" == "y" ]]; then
+        sudo usermod -aG docker $USER
+        echo "User added to docker group. Please log out and log back in for the changes to take effect."
+        exit 0
+    fi
+fi
+
 # Set variables
 REPO_URL="https://raw.githubusercontent.com/icon-project/relayer-docker/main"
 CONFIG_DIR="${HOME}/relayer-docker-config"

@@ -39,46 +39,46 @@ You can quickly set up the relayer infrastructure using the provided install scr
     - AWS Credentials:
       - AWS Access Key ID
       - AWS Secret Access Key
-      - AWS Default Region (default: us-east-1)
+      - AWS Default Region (default: `us-east-1`)
 
     - Image Versions:
-      - Relayer Image Version (default: latest)
-      - Dashboard Image Version (default: latest)
+      - Relayer Image Version (default: `latest`)
+      - Dashboard Image Version (default: `latest`)
 
-    - Restart Policy (default: unless-stopped)
+    - Restart Policy (default: `unless-stopped`)
 
     - Admin Credentials:
 
-      - Admin Email (default: <admin@icon.community>)
-      - Admin Password (default: p@ssw0rd)
+      - Admin Email (default: <`admin@icon.community`>)
+      - Admin Password (default: `p@ssw0rd`)
 
     - Let's Encrypt Configuration:
-      - Enable Let's Encrypt? (yes or no, default: no)
+      - Enable Let's Encrypt? (`yes` or `no`, default: `no`)
 
         If enabled:
         - Use Let's Encrypt Staging
-          - Environment? (yes or no, default: no)
+          - Environment? (`yes` or `no`, default: `no`)
         - Let's Encrypt Domain
         - Let's Encrypt Email
 
     - Configuration File Path:
-      - Path to config.yaml for the relayer service.
+      - Path to `config.yaml` for the relayer service.
 
 3. Wait for Deployment
 
     The script will:
 
     - Check for required commands.
-    - Download the docker-compose.yaml file.
-    - Generate a secure NEXTAUTH_SECRET.
-    - Create a .env file with your configuration.
+    - Download the `docker-compose.yaml` file.
+    - Generate a secure `NEXTAUTH_SECRET`.
+    - Create a `.env` file with your configuration.
     - Start the Docker services using Docker Compose.
 
 4. Access the Admin Dashboard
 
     - If Let's Encrypt is enabled and configured:
 
-      - Access the dashboard at <https://your-domain>
+      - Access the dashboard at <`https://your-domain`>
 
     - If Let's Encrypt is not enabled:
       - Access the dashboard at <http://localhost> or your server's IP address.
