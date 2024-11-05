@@ -4,7 +4,9 @@ USER="relayer"
 
 HOME="$(eval echo ~$USER)"
 
-DAEMON="/usr/bin/centralized-relay start --home /data --config $HOME/config.yaml"
+RELAY_HOME="${RELAY_HOME:-/data}"
+
+DAEMON="/usr/bin/centralized-relay start --home "$RELAY_HOME" --config $HOME/config.yaml"
 
 RLY_CMD="exec $DAEMON"
 

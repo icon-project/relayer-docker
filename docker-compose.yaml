@@ -3,7 +3,7 @@ services:
     image: iconcommunity/centralized-relay:${RELAYER_IMAGE_VERSION:-latest}
     restart: ${RESTART_POLICY:-unless-stopped}
     volumes:
-      - ${CONFIG}/relayer:/data:Z
+      - ${CONFIG}/relayer/data:/data:Z
       - ${CONFIG_PATH:-./config.yaml}:/home/${RELAYER_USER:-relayer}/config.yaml:ro
       - relay-socket:${SOCKET_DIR:-/var/run/relayer}
     labels:

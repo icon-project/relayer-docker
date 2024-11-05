@@ -4,14 +4,16 @@ USER="${RELAYER_USER:-relayer}"
 
 HOME="$(eval echo ~$USER)"
 
-DATA_DIR="${RELAY_HOME:-/data}"
+RELAY_HOME="${RELAY_HOME:-/data}"
 
 SOCKET_DIR="${SOCKET_DIR:-/var/run/relayer}"
 
-mkdir -p "$SOCKET_DIR"
+mkdir -p "$SOCKET_DIR" "$RELAY_HOME"
 
-chown -R $USER:$USER "$DATA_DIR"
+chown -R $USER:$USER "$RELAY_HOME"
 
 chown -R $USER $SOCKET_DIR
+
+chown -R $USER $HOME
 
 chmod 775 $SOCKET_DIR
