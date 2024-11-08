@@ -37,8 +37,8 @@ You can quickly set up the relayer infrastructure using the provided install scr
     The script will prompt you for the necessary configuration parameters:
 
     - AWS Credentials:
-      - AWS Access Key ID
-      - AWS Secret Access Key
+      - AWS Access Key ID [ optional ]
+      - AWS Secret Access Key [ optional ]
       - AWS Default Region (default: `us-east-1`)
 
     - Image Versions:
