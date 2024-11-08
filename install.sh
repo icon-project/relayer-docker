@@ -58,8 +58,8 @@ curl -L "${REPO_URL}/${DOCKER_COMPOSE_FILE}" -o "${CONFIG_DIR}/${DOCKER_COMPOSE_
 # Prompt user for environment variables
 
 ## data directory
-read -p "Enter Data Directory [./data]: " DATA_DIR
-CONFIG=${DATA_DIR:-./data}
+read -p "Enter Data Directory [$CONFIG_DIR/.data]: " DATA_DIR
+CONFIG=${DATA_DIR:-${CONFIG_DIR}/.data}
 
 # AWS Credentials
 read -p "Enter AWS Access Key ID: " AWS_ACCESS_KEY_ID
@@ -124,11 +124,11 @@ echo "Copying ${CONFIG_PATH} to ${CONFIG_DIR}/config.yaml"
 cp "${CONFIG_PATH}" "${CONFIG_DIR}/config.yaml"
 
 if [[ -d "$HOME/.centralized-relay/keystore" ]]; then
-    read -p "Copy keystore to ${CONFIG_DIR}/relayer/.data/keystore? (yes/no) [no]: " COPY_KEYSTORE
+    read -p "Copy keystore to ${CONFIG}/relayer/keystore? (yes/no) [no]: " COPY_KEYSTORE
     COPY_KEYSTORE=${COPY_KEYSTORE:-no}
     if [[ "${COPY_KEYSTORE}" == "yes" || "${COPY_KEYSTORE}" == "y" ]]; then
-        mkdir -p "${CONFIG_DIR}/${CONFIG}/relayer/data/keystore"
-        cp -r "$HOME/.centralized-relay/keystore" "${CONFIG_DIR}/${CONFIG}/relayer/data/keystore"
+        mkdir -p "${CONFIG}/relayer/data"
+        cp -R "$HOME/.centralized-relay/keystore" "${CONFIG}/relayer/data"
     fi
 fi
 
