@@ -112,8 +112,8 @@ else
 fi
 
 # RELAYER CONFIG_PATH
-read -p "Enter relayer config (path to config.yaml) [./config.yaml]: " CONFIG_PATH
-CONFIG_PATH=${CONFIG_PATH:-./config.yaml}
+read -p "Enter relayer config (path to config.yaml) [$HOME/.centralized-relay/config.yaml]: " CONFIG_PATH
+CONFIG_PATH=${CONFIG_PATH:-$HOME/.centralized-relay/config.yaml}
 
 # Check if CONFIG_PATH exists
 if [[ ! -f "${CONFIG_PATH}" ]]; then
@@ -122,6 +122,15 @@ if [[ ! -f "${CONFIG_PATH}" ]]; then
 fi
 echo "Copying ${CONFIG_PATH} to ${CONFIG_DIR}/config.yaml"
 cp "${CONFIG_PATH}" "${CONFIG_DIR}/config.yaml"
+
+if [[ -d "$HOME/.centralized-relay/keystore" ]]; then
+    read -p "Copy keystore to ${CONFIG_DIR}/relayer/data/keystore? (yes/no) [no]: " COPY_KEYSTORE
+    COPY_KEYSTORE=${COPY_KEYSTORE:-no}
+    if [[ "${COPY_KEYSTORE}" == "yes" || "${COPY_KEYSTORE}" == "y" ]]; then
+        mkdir -p "${CONFIG_DIR}/relayer/data/keystore"
+        cp -r "$HOME/.centralized-relay/keystore" "${CONFIG_DIR}/relayer/data/keystore"
+    fi
+fi
 
 # Create .env file
 cat <<EOF > "${CONFIG_DIR}/.env"
