@@ -8,6 +8,11 @@ services:
       - relay-socket:${SOCKET_DIR:-/var/run/relayer}
     labels:
       service: "centralized-relay"
+    healthcheck:
+      test: ["CMD", "test", "-S", "${SOCKET_DIR:-/var/run/relayer}/relay.sock"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -16,7 +21,7 @@ services:
     networks:
       relayer:
   dashboard:
-    image: iconcommunity/relayer-admin-dashboard:${NGINX_IMAGE_VERSION:-latest}
+    image: iconcommunity/relayer-admin-dashboard:${DASHBOARD_IMAGE_VERSION:-latest}
     restart: ${RESTART_POLICY:-unless-stopped}
     ports:
       - "${HTTP_PORT:-80}:80"
@@ -30,6 +35,15 @@ services:
       - relay-socket:${SOCKET_DIR:-/var/run/relayer}
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
+    healthcheck:
+      test:
+        - "CMD"
+        - "curl"
+        - "-f"
+        - "http://dashboard:${DASHBOARD_PORT:-3000}/api/health"
+      interval: 30s
+      timeout: 10s
+      retries: 3
     labels:
       service: "relayer-admin-dashboard"
     environment:
