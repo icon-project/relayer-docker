@@ -11,14 +11,20 @@ This repository provides a Docker-based setup for the relayer infrastructure, in
 
 ### Prerequisites
 
-Ensure that the following are installed on your system:
+#### Required Software
 
 - **Docker**: [Get Docker](https://docs.docker.com/engine/install/)
-- **Docker Compose**: Included with Docker Desktop or install separately for your platform.
-- **curl**
-- **openssl**
+- **Docker Compose**: Included with Docker setup or [install separately](https://docs.docker.com/compose/install/)
+- **curl** (pre-installed on most systems)
+- **openssl** (pre-installed on most systems)
 
-If you're planning to use Let's Encrypt for SSL certificates, ensure that your domain is pointing to the server's IP address.
+#### Is a Domain Required?
+
+  If you plan to use Let's Encrypt for SSL certificates, you must have a registered domain name with DNS records correctly pointing to your server's IP address. This is necessary for Let's Encrypt to verify your domain and issue SSL certificates.
+
+  If you do not have a domain, self-signed certificates will be automatically generated and used for SSL.
+
+  While using Let's Encrypt is not strictly necessary, it is recommended for production environments to secure communication between the client and the server with valid SSL certificates.
 
 ### Quick Start with Install Script
 
@@ -80,10 +86,10 @@ You can quickly set up the relayer infrastructure using the provided install scr
 
     - If Let's Encrypt is enabled and configured:
 
-      - Access the dashboard at <`https://your-domain`>
+      - Access the dashboard at `https://your-domain`
 
     - If Let's Encrypt is not enabled:
-      - Access the dashboard at <http://localhost> or your server's IP address.
+      - Access the dashboard at <https://localhost> or your server's IP address.
 
 ### Managing the Services
 
