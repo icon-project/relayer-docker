@@ -16,12 +16,12 @@ for cmd in "${REQUIRED_COMMANDS[@]}"; do
 done
 
 # Check for docker-compose or docker compose
-if command_exists "docker-compose"; then
-    DOCKER_COMPOSE_COMMAND="$(which docker-compose)"
-elif docker compose version >/dev/null 2>&1; then
+if docker compose version >/dev/null 2>&1; then
     DOCKER_COMPOSE_COMMAND="docker compose"
+elif command_exists "docker-compose"; then
+    DOCKER_COMPOSE_COMMAND="docker-compose"
 else
-    MISSING_COMMANDS+=("docker-compose or docker compose")
+    MISSING_COMMANDS+=("docker compose or docker-compose")
 fi
 
 if [ ${#MISSING_COMMANDS[@]} -ne 0 ]; then
