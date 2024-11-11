@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -a
+
+CONFIG_DIR="${CONFIG_DIR:-$HOME/relayer-docker-config}"
+
+[ -f "$CONFIG_DIR/.env" ] && . "$CONFIG_DIR/.env"
+
+if [ ! -f "${CONFIG_DIR}/.env" ] && [ ! -f "${CONFIG_DIR}/config.yaml" ]; then
+  echo "Config file not found. Run the install.sh script to create the config file."
+  exit 1
+fi
+
+CONFIG_DIR="${CONFIG_DIR:-$HOME/relayer-docker-config}"
+DATA_DIR="${CONFIG_DIR}/.data"
+RELAYER_IMAGE_VERSION="${RELAYER_IMAGE_VERSION:-latest}"
+RELAY_HOME="${RELAY_HOME:-/data}"
+RELAYER_USER="${RELAYER_USER:-relayer}"
+SOCKET_PATH="${SOCKET_PATH:-/var/run/relayer/relay.sock}"
+
+docker run --rm -it \
+  --network host \
+  --env-file "${CONFIG_DIR}/.env" \
+  -v "${CONFIG_DIR}/config.yaml:/home/$RELAYER_USER/config.yaml:Z" \
+  -v "${DATA_DIR}/relayer/data:$RELAY_HOME" \
+  -v relayer-socket:/var/run/relayer \
+  -e SOCKET_PATH="${SOCKET_PATH}" \
+  iconcommunity/centralized-relay:${RELAYER_IMAGE_VERSION} \
+  crly "$@"
