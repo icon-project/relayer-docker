@@ -18,6 +18,8 @@ Ensure that the following are installed on your system:
 - **curl**
 - **openssl**
 
+If you're planning to use Let's Encrypt for SSL certificates, ensure that your domain is pointing to the server's IP address.
+
 ### Quick Start with Install Script
 
 You can quickly set up the relayer infrastructure using the provided install script.

@@ -103,6 +103,31 @@ if [[ "${ENABLE_LETSENCRYPT}" == "yes" || "${ENABLE_LETSENCRYPT}" == "y" ]]; the
     read -p "Enter Let's Encrypt Domain: " LETSENCRYPT_DOMAIN
     read -p "Enter Let's Encrypt Email: " LETSENCRYPT_EMAIL
     NEXTAUTH_URL="https://${LETSENCRYPT_DOMAIN}"
+
+    # Check if domain DNS is configured correctly
+    echo "Checking DNS configuration for ${LETSENCRYPT_DOMAIN}..."
+    # Get the public IP address of the server
+    PUBLIC_IP=$(curl -s https://ipinfo.io/ip)
+    if [ -z "$PUBLIC_IP" ]; then
+        echo "Error: Unable to determine public IP address."
+        exit 1
+    fi
+
+    # Resolve the domain's A record
+    DOMAIN_IP=$(dig +short A ${LETSENCRYPT_DOMAIN})
+    if [ -z "$DOMAIN_IP" ]; then
+        echo "Error: Unable to resolve domain ${LETSENCRYPT_DOMAIN}. Please ensure the domain is configured with an A record."
+        exit 1
+    fi
+
+    # Compare the IP addresses
+    if [[ "$DOMAIN_IP" != "$PUBLIC_IP" ]]; then
+        echo "Error: The domain ${LETSENCRYPT_DOMAIN} is not pointing to this server's IP address (${PUBLIC_IP})."
+        echo "Please configure your DNS settings to point the domain to ${PUBLIC_IP} and try again."
+        exit 1
+    else
+        echo "Success: The domain ${LETSENCRYPT_DOMAIN} is correctly configured."
+    fi
 else
     ENABLE_LETSENCRYPT=0
     LETSENCRYPT_USE_STAGING=1
