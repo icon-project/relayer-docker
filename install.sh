@@ -17,7 +17,7 @@ done
 
 # Check for docker-compose or docker compose
 if command_exists "docker-compose"; then
-    DOCKER_COMPOSE_COMMAND="docker-compose"
+    DOCKER_COMPOSE_COMMAND="$(which docker-compose)"
 elif docker compose version >/dev/null 2>&1; then
     DOCKER_COMPOSE_COMMAND="docker compose"
 else
