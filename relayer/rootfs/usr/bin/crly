@@ -1,3 +1,16 @@
 #!/bin/sh
 
-exec centralized-relay "$@"
+set -a
+
+USER="${RELAYER_USER:-relayer}"
+HOME="/home/$USER"
+CONFIG_PATH="${CONFIG_PATH:-${HOME}/config.yaml}"
+
+[ -f "$CONFIG_PATH" ] || {
+  echo "Config file not found. Run the install.sh script to create the config file."
+  exit 1
+}
+
+RELAY_HOME="${RELAY_HOME:-/data}"
+
+exec centralized-relay "$@" --home "$RELAY_HOME" --config $CONFIG_PATH
