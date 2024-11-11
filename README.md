@@ -22,6 +22,13 @@ If you're migrating from previous systemctl based deployment, you can continue b
 - **curl** (pre-installed on most systems)
 - **openssl** (pre-installed on most systems)
 
+#### Ports Required
+
+Following ports are required to be open on the server:
+
+- **HTTP**: 80
+- **HTTPS**: 443
+
 #### Is a Domain Required?
 
   If you plan to use Let's Encrypt for SSL certificates, you must have a registered domain name with DNS records correctly pointing to your server's IP address. This is necessary for Let's Encrypt to verify your domain and issue SSL certificates.
