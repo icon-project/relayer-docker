@@ -11,6 +11,10 @@ This repository provides a Docker-based setup for the relayer infrastructure, in
 
 ### Prerequisites
 
+If you're migrating from previous systemctl based deployment, you can continue below.
+
+  If you're setting up for the first time, please follow the [KMS](https://github.com/icon-project/centralized-relay/wiki/KMS#aws-kms) for setting up the KMS first and then follow the below steps.
+
 #### Required Software
 
 - **Docker**: [Get Docker](https://docs.docker.com/engine/install/)
