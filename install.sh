@@ -181,4 +181,4 @@ EOF
 cd "${CONFIG_DIR}"
 
 # Run docker compose
-${DOCKER_COMPOSE_COMMAND} up -d
+${DOCKER_COMPOSE_COMMAND} pull && ${DOCKER_COMPOSE_COMMAND} up -d
