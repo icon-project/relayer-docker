@@ -10,10 +10,4 @@ SOCKET_DIR="${SOCKET_DIR:-/var/run/relayer}"
 
 mkdir -p "$SOCKET_DIR" "$RELAY_HOME"
 
-chown -R $USER:$USER "$RELAY_HOME"
-
-chown -R $USER $SOCKET_DIR
-
-chown -R $USER $HOME
-
-chmod 775 $SOCKET_DIR
+chown -R $USER:$USER "$RELAY_HOME" "$SOCKET_DIR" "$HOME"

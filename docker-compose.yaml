@@ -4,8 +4,9 @@ services:
     restart: ${RESTART_POLICY:-unless-stopped}
     volumes:
       - ${CONFIG}/relayer/data:/data:Z
-      - ${CONFIG_PATH:-./config.yaml}:/home/${RELAYER_USER:-relayer}/config.yaml:ro
-      - relay-socket:${SOCKET_DIR:-/var/run/relayer}
+      - ${CONFIG}/relayer/home:/home/${RELAYER_USER:-relayer}:Z
+      - ${CONFIG_PATH:-./config.yaml}:/home/${RELAYER_USER:-relayer}/config.yaml:Z
+      - relay-socket:${SOCKET_DIR:-/var/run/relayer}:Z
     labels:
       service: "centralized-relay"
     healthcheck:
@@ -32,7 +33,7 @@ services:
       - ${CONFIG}/web/crontabs:/var/spool/cron/crontabs:Z
       - ${CONFIG}/dashboard/cache:/usr/share/dashboard/.next/cache:Z
       - ${CONFIG}/dashboard/data:/data:Z
-      - relay-socket:${SOCKET_DIR:-/var/run/relayer}
+      - relay-socket:${SOCKET_DIR:-/var/run/relayer}:Z
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
     healthcheck:
@@ -63,8 +64,8 @@ services:
       - NEXT_RELAYER_SOCKET_PATH=${SOCKET_DIR:-/var/run/relayer}/relay.sock
       - NEXT_RELAYERS_MAP_FILE_PATH=${NEXT_RELAYERS_MAP_FILE_PATH:-/data/database/relayers.json}
       - NEXT_USERS_MAP_FILE_PATH=${NEXT_USERS_MAP_FILE_PATH:-/data/database/users.json}
-      - DEAFULT_ADMIN_EMAIL
-      - DEAFULT_ADMIN_PASSWORD
+      - DEFAULT_ADMIN_EMAIL
+      - DEFAULT_ADMIN_PASSWORD
     depends_on:
       - relayer
     networks:

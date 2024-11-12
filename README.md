@@ -11,9 +11,9 @@ This repository provides a Docker-based setup for the relayer infrastructure, in
 
 ### Prerequisites
 
-If you're migrating from previous systemctl based deployment, you can continue below.
+If you're migrating relayer from previous systemctl based deployment, you can continue from the steps below.
 
-  If you're setting up for the first time, please follow the [KMS](https://github.com/icon-project/centralized-relay/wiki/KMS#aws-kms) for setting up the KMS first and then follow the below steps.
+  Otherwise, if you're setting up for the first time, please follow the [KMS](https://github.com/icon-project/centralized-relay/wiki/KMS#aws-kms) for setting up the KMS first and then follow the below steps.
 
 #### Required Software
 
@@ -26,8 +26,8 @@ If you're migrating from previous systemctl based deployment, you can continue b
 
 Following ports are required to be open on the server:
 
-- **HTTP**: 80
-- **HTTPS**: 443
+- **HTTP**: `80`
+- **HTTPS**: `443`
 
 #### Is a Domain Required?
 
@@ -142,3 +142,5 @@ You can manage the services using Docker Compose commands.
   docker-compose pull
   docker-compose up -d
   ```
+
+- E
