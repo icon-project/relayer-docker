@@ -1,12 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-USER="relayer"
-
-HOME="$(eval echo ~$USER)"
-
-RELAY_HOME="${RELAY_HOME:-/data}"
-
-DAEMON="/usr/bin/centralized-relay start --home "$RELAY_HOME" --config $HOME/config.yaml"
+DAEMON="/usr/bin/crly start"
 
 RLY_CMD="exec $DAEMON"
 

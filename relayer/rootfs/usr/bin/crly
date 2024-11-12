@@ -13,4 +13,4 @@ CONFIG_PATH="${CONFIG_PATH:-${HOME}/config.yaml}"
 
 RELAY_HOME="${RELAY_HOME:-/data}"
 
-exec centralized-relay "$@" --home "$RELAY_HOME" --config $CONFIG_PATH
+exec /usr/bin/centralized-relay "$@" --home "$RELAY_HOME" --config $CONFIG_PATH
