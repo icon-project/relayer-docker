@@ -11,7 +11,6 @@ if [ ! -f "${CONFIG_DIR}/.env" ] && [ ! -f "${CONFIG_DIR}/config.yaml" ]; then
   exit 1
 fi
 
-CONFIG_DIR="${CONFIG_DIR:-$HOME/relayer-docker-config}"
 DATA_DIR="${CONFIG_DIR}/.data"
 RELAYER_IMAGE_VERSION="${RELAYER_IMAGE_VERSION:-latest}"
 RELAY_HOME="${RELAY_HOME:-/data}"

@@ -133,7 +133,7 @@ else
     LETSENCRYPT_USE_STAGING=1
     LETSENCRYPT_DOMAIN=""
     LETSENCRYPT_EMAIL=""
-    read -p "Enter NEXTAUTH_URL (e.g., http://your-ip-address): " NEXTAUTH_URL
+    read -p "Enter NEXTAUTH_URL (e.g., https://your-ip-address): " NEXTAUTH_URL
 fi
 
 # RELAYER CONFIG_PATH
@@ -149,8 +149,8 @@ echo "Copying ${CONFIG_PATH} to ${CONFIG_DIR}/config.yaml"
 cp "${CONFIG_PATH}" "${CONFIG_DIR}/config.yaml"
 
 if [[ -d "$HOME/.centralized-relay/keystore" ]]; then
-    read -p "Copy keystore to ${CONFIG}/relayer/keystore? (yes/no) [no]: " COPY_KEYSTORE
-    COPY_KEYSTORE=${COPY_KEYSTORE:-no}
+    read -p "Copy keystore to ${CONFIG}/relayer/keystore? (yes/no) [yes]: " COPY_KEYSTORE
+    COPY_KEYSTORE=${COPY_KEYSTORE:-yes}
     if [[ "${COPY_KEYSTORE}" == "yes" || "${COPY_KEYSTORE}" == "y" ]]; then
         mkdir -p "${CONFIG}/relayer/data"
         cp -R "$HOME/.centralized-relay/keystore" "${CONFIG}/relayer/data"
