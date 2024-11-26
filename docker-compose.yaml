@@ -4,9 +4,9 @@ services:
     restart: ${RESTART_POLICY:-unless-stopped}
     volumes:
       - ${CONFIG}/relayer/data:/data:Z
-      - ${CONFIG}/relayer/home:/home/${RELAYER_USER:-relayer}:Z
-      - ${CONFIG_PATH:-./config.yaml}:/home/${RELAYER_USER:-relayer}/config.yaml:Z
-      - relay-socket:${SOCKET_DIR:-/var/run/relayer}:Z
+      - ${CONFIG}/relayer/home:/home/${RELAYER_USER:-relayer}
+      - ${CONFIG_PATH:-./config.yaml}:/home/${RELAYER_USER:-relayer}/config.yaml
+      - relay-socket:${SOCKET_DIR:-/var/run/relayer}
     labels:
       service: "centralized-relay"
     healthcheck:
@@ -29,11 +29,11 @@ services:
       - "${HTTPS_PORT:-443}:443"
       - "${DASHBOARD_PORT:-3000}"
     volumes:
-      - ${CONFIG}/web:/config:Z
-      - ${CONFIG}/web/crontabs:/var/spool/cron/crontabs:Z
-      - ${CONFIG}/dashboard/cache:/usr/share/dashboard/.next/cache:Z
-      - ${CONFIG}/dashboard/data:/data:Z
-      - relay-socket:${SOCKET_DIR:-/var/run/relayer}:Z
+      - ${CONFIG}/web:/config
+      - ${CONFIG}/web/crontabs:/var/spool/cron/crontabs
+      - ${CONFIG}/dashboard/cache:/usr/share/dashboard/.next/cache
+      - ${CONFIG}/dashboard/data:/data
+      - relay-socket:${SOCKET_DIR:-/var/run/relayer}
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
     healthcheck:
