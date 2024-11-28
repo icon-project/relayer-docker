@@ -52,38 +52,45 @@ jobs:
 
       - name: Build base image
         uses: docker/build-push-action@v6
+        id: build-and-push-base
         with:
           context: ./base
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: false
           tags: |
             iconcommunity/relay-base:latest
             iconcommunity/relay-base:${{ env.TAG_NAME }}
 
       - name: Build relayer image
         uses: docker/build-push-action@v6
+        id: build-and-push-relayer
         with:
           context: ./relayer
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: false
           tags: |
             iconcommunity/centralized-relay:latest
             iconcommunity/centralized-relay:${{ env.TAG_NAME }}
 
       - name: Build admin dashboard image
         uses: docker/build-push-action@v6
+        id: build-and-push-admin-dashboard
         with:
           context: ./admin-dashboard
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: false
           tags: |
             iconcommunity/relayer-admin-dashboard:latest
             iconcommunity/relayer-admin-dashboard:${{ env.TAG_NAME }}
 
+      - name: Push images
+        run: |
+          echo "${{ steps.docker_meta.outputs.tags }}" | tr ' ' '\n' | xargs -I {} docker push {}
+
       - name: Install cosign
         uses: sigstore/cosign-installer@v2.3.0
 
-      - name: Sign image with a key
+      - name: Sign base image with cosign
         run: |
           images=""
           for tag in ${TAGS}; do
@@ -91,7 +98,43 @@ jobs:
           done
           cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
         env:
-          TAGS: ${{ steps.docker_meta.outputs.tags }}
+          TAGS: "iconcommunity/relay-base:latest iconcommunity/relay-base:${{ env.TAG_NAME }}"
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          DIGEST: ${{ steps.build-and-push-base.outputs.digest }}
+
+      - name: Sign relayer image with cosign
+        run: |
+          images=""
+          for tag in ${TAGS}; do
+            images+="${tag}@${DIGEST} "
+          done
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
+        env:
+          TAGS: "iconcommunity/centralized-relay:latest iconcommunity/centralized-relay:${{ env.TAG_NAME }}"
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          DIGEST: ${{ steps.build-and-push-relayer.outputs.digest }}
+
+      - name: Sign admin dashboard image with cosign
+        run: |
+          images=""
+          for tag in ${TAGS}; do
+            images+="${tag}@${DIGEST} "
+          done
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
+        env:
+          TAGS: "iconcommunity/relayer-admin-dashboard:latest iconcommunity/relayer-admin-dashboard:${{ env.TAG_NAME }}"
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          DIGEST: ${{ steps.build-and-push-admin-dashboard.outputs.digest }}
+
+      - name: Create a release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./base/Dockerfile
+            ./relayer/Dockerfile
+            ./admin-dashboard/Dockerfile
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ env.TAG_NAME }}
