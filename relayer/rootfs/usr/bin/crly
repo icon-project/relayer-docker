@@ -5,6 +5,8 @@ set -a
 USER="${RELAYER_USER:-relayer}"
 HOME="/home/$USER"
 CONFIG_PATH="${CONFIG_PATH:-${HOME}/config.yaml}"
+RELAYER_LOG_LEVEL="${RELAYER_LOG_LEVEL:-info}"
+RELAYER_LOG_FORMAT="${RELAYER_LOG_FORMAT:-json}"
 
 [ -f "$CONFIG_PATH" ] || {
   echo "Config file not found. Run the install.sh script to create the config file."
@@ -13,4 +15,4 @@ CONFIG_PATH="${CONFIG_PATH:-${HOME}/config.yaml}"
 
 RELAY_HOME="${RELAY_HOME:-/data}"
 
-exec /usr/bin/centralized-relay "$@" --home "$RELAY_HOME" --config $CONFIG_PATH
+exec /usr/bin/centralized-relay "$@" --home "$RELAY_HOME" --config $CONFIG_PATH --log-level $RELAYER_LOG_LEVEL --log-format $RELAYER_LOG_FORMAT

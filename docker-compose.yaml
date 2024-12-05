@@ -19,6 +19,8 @@ services:
       - AWS_SECRET_ACCESS_KEY
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
       - SOCKET_PATH=${SOCKET_DIR:-/var/run/relayer}/relay.sock
+      - RELAYER_LOG_LEVEL=${RELAYER_LOG_LEVEL:-info}
+      - RELAYER_LOG_FORMAT=${RELAYER_LOG_FORMAT:-json}
     networks:
       relayer:
   dashboard:
