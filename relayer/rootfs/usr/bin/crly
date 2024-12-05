@@ -5,8 +5,7 @@ set -a
 USER="${RELAYER_USER:-relayer}"
 HOME="/home/$USER"
 CONFIG_PATH="${CONFIG_PATH:-${HOME}/config.yaml}"
-RELAYER_LOG_LEVEL="${RELAYER_LOG_LEVEL:-info}"
-RELAYER_LOG_FORMAT="${RELAYER_LOG_FORMAT:-json}"
+RELAYER_LOG_FORMAT="${RELAYER_LOG_FORMAT:-auto}"
 
 [ -f "$CONFIG_PATH" ] || {
   echo "Config file not found. Run the install.sh script to create the config file."

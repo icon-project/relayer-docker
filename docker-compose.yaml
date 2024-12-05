@@ -2,6 +2,7 @@ services:
   relayer:
     image: iconcommunity/centralized-relay:${RELAYER_IMAGE_VERSION:-latest}
     restart: ${RESTART_POLICY:-unless-stopped}
+    container_name: relayer
     volumes:
       - ${CONFIG}/relayer/data:/data:Z
       - ${CONFIG}/relayer/home:/home/${RELAYER_USER:-relayer}
@@ -19,13 +20,13 @@ services:
       - AWS_SECRET_ACCESS_KEY
       - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-1}
       - SOCKET_PATH=${SOCKET_DIR:-/var/run/relayer}/relay.sock
-      - RELAYER_LOG_LEVEL=${RELAYER_LOG_LEVEL:-info}
-      - RELAYER_LOG_FORMAT=${RELAYER_LOG_FORMAT:-json}
+      - RELAYER_LOG_FORMAT
     networks:
       relayer:
   dashboard:
     image: iconcommunity/relayer-admin-dashboard:${DASHBOARD_IMAGE_VERSION:-latest}
     restart: ${RESTART_POLICY:-unless-stopped}
+    container_name: dashboard
     ports:
       - "${HTTP_PORT:-80}:80"
       - "${HTTPS_PORT:-443}:443"
