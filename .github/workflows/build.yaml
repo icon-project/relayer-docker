@@ -4,13 +4,11 @@ on:
   push:
     tags:
       - v*
-  repository_dispatch:
-    types: [trigger-build]
   workflow_dispatch:
-
-permissions:
-  contents: read
-  actions: write
+    inputs:
+      tag:
+        description: 'Tag to build and push'
+        required: true
 
 jobs:
   build:
@@ -33,112 +31,66 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set TAG_NAME
-        id: vars
-        run: |
-          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
-            echo "TAG_NAME=${{ github.event.client_payload.tag }}" >> $GITHUB_ENV
-          else
-            echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          fi
-
-      - id: docker_meta
-        name: Get metadata
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            iconcommunity/relay-base:latest
-            iconcommunity/relay-base:${{ env.TAG_NAME }}
-            iconcommunity/centralized-relay:latest
-            iconcommunity/centralized-relay:${{ env.TAG_NAME }}
-            iconcommunity/relayer-admin-dashboard:latest
-            iconcommunity/relayer-admin-dashboard:${{ env.TAG_NAME }}
-
       - name: Build base image
-        uses: docker/build-push-action@v6
         id: build-and-push-base
+        uses: docker/build-push-action@v6
         with:
           context: ./base
           platforms: linux/amd64,linux/arm64
-          push: false
+          push: true
           tags: |
             iconcommunity/relay-base:latest
-            iconcommunity/relay-base:${{ env.TAG_NAME }}
+            iconcommunity/relay-base:${{ inputs.tag }}
 
       - name: Build relayer image
-        uses: docker/build-push-action@v6
         id: build-and-push-relayer
+        uses: docker/build-push-action@v6
         with:
           context: ./relayer
           platforms: linux/amd64,linux/arm64
-          push: false
+          push: true
           tags: |
             iconcommunity/centralized-relay:latest
-            iconcommunity/centralized-relay:${{ env.TAG_NAME }}
+            iconcommunity/centralized-relay:${{ inputs.tag }}
 
-      - name: Build admin dashboard image
-        uses: docker/build-push-action@v6
+      - name: Build nginx image
         id: build-and-push-admin-dashboard
+        uses: docker/build-push-action@v6
         with:
           context: ./admin-dashboard
           platforms: linux/amd64,linux/arm64
-          push: false
+          push: true
           tags: |
             iconcommunity/relayer-admin-dashboard:latest
-            iconcommunity/relayer-admin-dashboard:${{ env.TAG_NAME }}
+            iconcommunity/relayer-admin-dashboard:${{ inputs.tag }}
 
-      - name: Push images
-        run: |
-          echo "${{ steps.docker_meta.outputs.tags }}" | tr ' ' '\n' | xargs -I {} docker push {}
+      - name: Sign base image
+        uses: ./.github/workflows/sign-image.yml
+        with:
+          tags: "iconcommunity/relay-base:latest iconcommunity/relay-base:${{ inputs.tag }}"
+          digest: ${{ steps.build-and-push-base.outputs.digest }}
 
-      - name: Install cosign
-        uses: sigstore/cosign-installer@v2.3.0
+      - name: Sign relayer image
+        uses: ./.github/workflows/sign-image.yml
+        with:
+          tags: "iconcommunity/centralized-relay:latest iconcommunity/centralized-relay:${{ inputs.tag }}"
+          digest: ${{ steps.build-and-push-relayer.outputs.digest }}
 
-      - name: Sign base image with cosign
-        run: |
-          images=""
-          for tag in ${TAGS}; do
-            images+="${tag}@${DIGEST} "
-          done
-          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
-        env:
-          TAGS: "iconcommunity/relay-base:latest iconcommunity/relay-base:${{ env.TAG_NAME }}"
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-          DIGEST: ${{ steps.build-and-push-base.outputs.digest }}
-
-      - name: Sign relayer image with cosign
-        run: |
-          images=""
-          for tag in ${TAGS}; do
-            images+="${tag}@${DIGEST} "
-          done
-          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
-        env:
-          TAGS: "iconcommunity/centralized-relay:latest iconcommunity/centralized-relay:${{ env.TAG_NAME }}"
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-          DIGEST: ${{ steps.build-and-push-relayer.outputs.digest }}
-
-      - name: Sign admin dashboard image with cosign
-        run: |
-          images=""
-          for tag in ${TAGS}; do
-            images+="${tag}@${DIGEST} "
-          done
-          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
-        env:
-          TAGS: "iconcommunity/relayer-admin-dashboard:latest iconcommunity/relayer-admin-dashboard:${{ env.TAG_NAME }}"
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-          DIGEST: ${{ steps.build-and-push-admin-dashboard.outputs.digest }}
+      - name: Sign nginx image
+        uses: ./.github/workflows/sign-image.yml
+        with:
+          tags: "iconcommunity/relayer-admin-dashboard:latest iconcommunity/relayer-admin-dashboard:${{ env.TAG_NAME }}"
+          digest: ${{ steps.build-and-push-admin-dashboard.outputs.digest }}
 
       - name: Create a release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             ./base/Dockerfile
             ./relayer/Dockerfile
             ./admin-dashboard/Dockerfile
+            ./docker-compose.yaml
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ env.TAG_NAME }}
+          name: ${{ inputs.tag }}
+          make_latest: true
+          generate_release_notes: true
