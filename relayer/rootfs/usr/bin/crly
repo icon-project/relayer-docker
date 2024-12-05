@@ -15,4 +15,4 @@ RELAYER_LOG_FORMAT="${RELAYER_LOG_FORMAT:-json}"
 
 RELAY_HOME="${RELAY_HOME:-/data}"
 
-exec /usr/bin/centralized-relay "$@" --home "$RELAY_HOME" --config $CONFIG_PATH --log-level $RELAYER_LOG_LEVEL --log-format $RELAYER_LOG_FORMAT
+exec /usr/bin/centralized-relay "$@" --home "$RELAY_HOME" --config $CONFIG_PATH --log-format $RELAYER_LOG_FORMAT
