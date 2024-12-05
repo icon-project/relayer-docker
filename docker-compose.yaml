@@ -36,6 +36,7 @@ services:
       - relay-socket:${SOCKET_DIR:-/var/run/relayer}
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test:
         - "CMD"
@@ -66,6 +67,7 @@ services:
       - NEXT_USERS_MAP_FILE_PATH=${NEXT_USERS_MAP_FILE_PATH:-/data/database/users.json}
       - DEFAULT_ADMIN_EMAIL
       - DEFAULT_ADMIN_PASSWORD
+      - DOCKER_HOST
     depends_on:
       - relayer
     networks:
