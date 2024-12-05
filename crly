@@ -1,28 +1,127 @@
 #!/bin/bash
 
-set -a
-
 CONFIG_DIR="${CONFIG_DIR:-$HOME/relayer-docker-config}"
 
-[ -f "$CONFIG_DIR/.env" ] && . "$CONFIG_DIR/.env"
+# Function to find docker-compose command
+find_docker_compose() {
+    if command -v docker-compose &>/dev/null; then
+        echo "docker-compose"
+    elif docker compose version &>/dev/null; then
+        echo "docker compose"
+    else
+        echo "Error: docker-compose or docker compose command not found."
+        exit 1
+    fi
+}
 
-if [ ! -f "${CONFIG_DIR}/.env" ] && [ ! -f "${CONFIG_DIR}/config.yaml" ]; then
-  echo "Config file not found. Run the install.sh script to create the config file."
-  exit 1
-fi
+DOCKER_COMPOSE_COMMAND=$(find_docker_compose)
 
-DATA_DIR="${CONFIG_DIR}/.data"
-RELAYER_IMAGE_VERSION="${RELAYER_IMAGE_VERSION:-latest}"
-RELAY_HOME="${RELAY_HOME:-/data}"
-RELAYER_USER="${RELAYER_USER:-relayer}"
-SOCKET_PATH="${SOCKET_PATH:-/var/run/relayer/relay.sock}"
+# Navigate to configuration directory
+cd "${CONFIG_DIR}" || exit 1
 
-docker run --rm -it \
-  --network host \
-  --env-file "${CONFIG_DIR}/.env" \
-  -v "${CONFIG_DIR}/config.yaml:/home/$RELAYER_USER/config.yaml:Z" \
-  -v "${DATA_DIR}/relayer/data:$RELAY_HOME" \
-  -v relayer-socket:/var/run/relayer \
-  -e SOCKET_PATH="${SOCKET_PATH}" \
-  iconcommunity/centralized-relay:${RELAYER_IMAGE_VERSION} \
-  crly "$@"
+COMMAND="$1"
+shift
+
+case "$COMMAND" in
+    upgrade)
+        # Pull the latest images for all services
+        echo "Pulling the latest images..."
+        ${DOCKER_COMPOSE_COMMAND} pull
+        ;;
+    start)
+        # Start services
+        SERVICE="$1"
+        if [ -n "$SERVICE" ]; then
+            echo "Starting service '$SERVICE'..."
+            ${DOCKER_COMPOSE_COMMAND} up -d "$SERVICE"
+        else
+            echo "Starting all services..."
+            ${DOCKER_COMPOSE_COMMAND} up -d
+        fi
+        ;;
+    stop)
+        # Stop services
+        SERVICE="$1"
+        if [ -n "$SERVICE" ]; then
+            echo "Stopping service '$SERVICE'..."
+            ${DOCKER_COMPOSE_COMMAND} stop "$SERVICE"
+        else
+            echo "Stopping all services..."
+            ${DOCKER_COMPOSE_COMMAND} stop
+        fi
+        ;;
+    restart)
+        # Restart services
+        SERVICE="$1"
+        if [ -n "$SERVICE" ]; then
+            echo "Restarting service '$SERVICE'..."
+            ${DOCKER_COMPOSE_COMMAND} restart "$SERVICE"
+        else
+            echo "Restarting all services..."
+            ${DOCKER_COMPOSE_COMMAND} restart
+        fi
+        ;;
+    update)
+        SUBCOMMAND="$1"
+        shift
+        case "$SUBCOMMAND" in
+            compose-config)
+                # Update docker-compose.yaml
+                echo "Updating docker-compose.yaml from the repository..."
+                REPO_URL="https://raw.githubusercontent.com/icon-project/relayer-docker/main/docker-compose.yaml"
+                curl -sL "${REPO_URL}" -o "${CONFIG_DIR}/docker-compose.yaml"
+                echo "docker-compose.yaml has been updated."
+                ;;
+            script)
+                # Self-upgrade the crly script
+                echo "Updating crly script from the repository..."
+                SCRIPT_URL="https://raw.githubusercontent.com/icon-project/relayer-docker/main/crly"
+                curl -sL "${SCRIPT_URL}" -o "${CONFIG_DIR}/crly.tmp"
+                if [ -s "${CONFIG_DIR}/crly.tmp" ]; then
+                    mv "${CONFIG_DIR}/crly.tmp" "${CONFIG_DIR}/crly"
+                    chmod +x "${CONFIG_DIR}/crly"
+                    echo "crly script has been updated."
+                else
+                    echo "Error: Failed to download the crly script."
+                    rm -f "${CONFIG_DIR}/crly.tmp"
+                fi
+                ;;
+            *)
+                # Update specific service
+                SERVICE="$SUBCOMMAND"
+                echo "Pulling the latest image for service '$SERVICE'..."
+                ${DOCKER_COMPOSE_COMMAND} pull "$SERVICE"
+                ;;
+        esac
+        ;;
+    logs)
+        SERVICE="$1"
+        if [ -n "$SERVICE" ]; then
+            echo "Showing logs for service '$SERVICE'..."
+            ${DOCKER_COMPOSE_COMMAND} logs -f "$SERVICE"
+        else
+            echo "Showing logs for all services..."
+            ${DOCKER_COMPOSE_COMMAND} logs -f
+        fi
+        ;;
+    *)
+        # Execute command inside the relayer container
+        # Ensure relayer service is running
+        CONTAINER_ID=$(${DOCKER_COMPOSE_COMMAND} ps -q relayer)
+        if [ -z "$CONTAINER_ID" ]; then
+            echo "Relayer service is not running. Starting it..."
+            ${DOCKER_COMPOSE_COMMAND} up -d relayer
+            # Wait for the container to be ready
+            sleep 5
+            CONTAINER_ID=$(${DOCKER_COMPOSE_COMMAND} ps -q relayer)
+        fi
+
+        if [ -z "$CONTAINER_ID" ]; then
+            echo "Error: Unable to start relayer service."
+            exit 1
+        fi
+
+        # Execute 'centralized-relay' command inside the running relayer container
+        docker exec -it "$CONTAINER_ID" centralized-relay "$COMMAND" "$@"
+        ;;
+esac
