@@ -104,43 +104,61 @@ You can quickly set up the relayer infrastructure using the provided install scr
 
 ### Managing the Services
 
-You can manage the services using Docker Compose commands.
+The `crly` script is a command-line utility that simplifies managing the relayer and admin dashboard services. It provides commands to start, stop, upgrade, and verify the services.
 
-- Check Service Status:
+#### Installation of `crly`
 
-  ```bash
-  docker-compose ps
-  ```
+1. Download the `crly` script:
 
-- View Logs:
+   ```bash
+   curl -L https://raw.githubusercontent.com/icon-project/relayer-docker/main/crly -o crly && chmod +x crly
+   ```
 
-  ```bash
-  docker-compose logs -f
-  ```
+2. Move the script to a directory in your PATH:
 
-- Stop Services:
+   ```bash
+    sudo mv crly /usr/local/bin
+    ```
 
-  ```bash
-  docker-compose down
-  ```
+3. Verify the installation:
 
-- Start Services:
+   ```bash
+   crly --version
+   ```
 
-  ```bash
-  docker-compose up -d
-  ```
+#### Usage
 
-- Restart Services:
+- **Help**:
 
   ```bash
-  docker-compose restart
+  crly --help
   ```
 
-- Upgrading Services:
+#### Commands
+
+- [action]: `start`, `stop`, `upgrade`, `verify`, `restart` `logs`
+- [service]: `relayer`, `dashboard`
+
+When no action is provided, the script will execute arbitrary commands on
+the relayer service container.
+
+When no service is provided, the script will execute the action on both the
+relayer and dashboard services.
+
+- **Perform an Action**:
 
   ```bash
-  docker-compose pull
-  docker-compose up -d
+  crly [action] [service] [version]
   ```
 
-- E
+- Execute a arbitrary command on the relayer service:
+
+  ```bash
+  crly db messages list
+  ```
+
+- Verify the services:
+
+  ```bash
+  crly verify relayer v1.9.6
+  ```
