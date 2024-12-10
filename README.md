@@ -7,7 +7,28 @@ This repository provides a Docker-based setup for the relayer infrastructure, in
 - **Relayer**: Handles the core relay functionality.
 - **Admin Dashboard**: Provides a web interface for managing and monitoring the relayer.
 
+## Semver Versioning
+
+The relayer and dashboard services are versioned using [Semantic Versioning](https://semver.org/).
+
+The versioning scheme follows the format `vX.Y.Z`, where:
+
+- `X` is the major version.
+- `Y` is the minor version.
+- `Z` is the patch version.
+
+### Docker Images
+
+The Docker images are tagged with the version number, e.g., `iconcommunity/centralized-relay:v1.9.6`.
+
+- Relayer: `iconcommunity/centralized-relay`
+- Dashboard: `iconcommunity/relayer-admin-dashboard`
+
+The `stable` tag is used for the latest stable release, and the `unstable` tag is used for the latest development version.
+
 ## Installation and Usage
+
+The relayer infrastructure can be set up using the provided install script or manually using Docker Compose.
 
 ### Prerequisites
 
@@ -104,7 +125,9 @@ You can quickly set up the relayer infrastructure using the provided install scr
 
 ### Managing the Services
 
-The `crly` script is a command-line utility that simplifies managing the relayer and admin dashboard services. It provides commands to start, stop, upgrade, and verify the services.
+The `crly` script is a command-line utility that simplifies managing the relayer and admin dashboard services.
+
+It provides commands to `start`, `stop`, `upgrade`, `restart`, `logs` and `verify` the services.
 
 #### Installation of `crly`
 
@@ -116,15 +139,15 @@ The `crly` script is a command-line utility that simplifies managing the relayer
 
 2. Move the script to a directory in your PATH:
 
-   ```bash
-    sudo mv crly /usr/local/bin
-    ```
+  ```bash
+  sudo mv crly /usr/local/bin
+  ```
 
 3. Verify the installation:
 
-   ```bash
-   crly --version
-   ```
+  ```bash
+  crly --version
+  ```
 
 #### Usage
 
