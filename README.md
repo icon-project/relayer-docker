@@ -162,7 +162,7 @@ It provides commands to `start`, `stop`, `upgrade`, `restart`, `logs` and `verif
 - [action]: `start`, `stop`, `upgrade`, `verify`, `restart` `logs`
 - [service]: `relayer`, `dashboard`
 
-When no action is provided, the script will execute arbitrary commands on
+When no action is provided, the script will execute provided arbitrary commands on
 the relayer service container.
 
 When no service is provided, the script will execute the action on both the
@@ -172,6 +172,12 @@ relayer and dashboard services.
 
   ```bash
   crly [action] [service] [version]
+  ```
+
+- Upgrade the services to a specific version:
+
+  ```bash
+  crly upgrade relayer v1.9.6 # verify is implicitly called before upgrade
   ```
 
 - Execute a arbitrary command on the relayer service:

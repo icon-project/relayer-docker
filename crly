@@ -6,7 +6,7 @@ CONFIG_DIR="${CONFIG_DIR:-$HOME/relayer-docker-config}"
 RELAYER_IMAGE_NAME="iconcommunity/centralized-relay"
 RELAYER_REPO_NAME="icon-project/centralized-relay"
 DASHBOARD_IMAGE_NAME="iconcommunity/relayer-admin-dashboard"
-DASHBOARD_REPO_NAME="icon-project/centralized-relayer-admin-dashboard"
+DASHBOARD_REPO_NAME="icon-project/relayer-admin-dashboard"
 COSIGN_VERSION="v2.4.1"
 
 find_docker_compose() {
