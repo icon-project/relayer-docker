@@ -137,16 +137,10 @@ It provides commands to `start`, `stop`, `upgrade`, `restart`, `logs` and `verif
    curl -L https://raw.githubusercontent.com/icon-project/relayer-docker/main/crly -o crly && chmod +x crly
    ```
 
-2. Move the script to a directory in your PATH:
+2. Verify the installation:
 
   ```bash
-  sudo mv crly /usr/local/bin
-  ```
-
-3. Verify the installation:
-
-  ```bash
-  crly --version
+  ./crly --version
   ```
 
 #### Usage
