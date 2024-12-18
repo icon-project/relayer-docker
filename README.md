@@ -140,7 +140,7 @@ It provides commands to `start`, `stop`, `upgrade`, `restart`, `logs` and `verif
 2. Verify the installation:
 
   ```bash
-  ./crly --version
+  ./crly --help
   ```
 
 #### Usage
