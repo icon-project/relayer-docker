@@ -139,11 +139,13 @@ case "$COMMAND" in
             esac
             verify_container "${IMAGE_NAME}" "${VERSION}" "${REPO_NAME}"
             ${DOCKER_COMPOSE_COMMAND} pull "$SERVICE"
+            ${DOCKER_COMPOSE_COMMAND} up -d "$SERVICE"
         else
             echo "Verifying and pulling latest images for all services..."
             verify_container "${RELAYER_IMAGE_NAME}" "${VERSION}" "${RELAYER_REPO_NAME}"
             verify_container "${DASHBOARD_IMAGE_NAME}" "${VERSION}" "${DASHBOARD_REPO_NAME}"
             ${DOCKER_COMPOSE_COMMAND} pull
+            ${DOCKER_COMPOSE_COMMAND} up -d
         fi
         ;;
     start)
