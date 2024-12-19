@@ -114,11 +114,37 @@ case "$COMMAND" in
         fi
         ;;
     upgrade)
-        VERSION="$1"
-        echo "Verifying and pulling latest images..."
-        verify_container "${RELAYER_IMAGE_NAME}" "${VERSION}" "${RELAYER_REPO_NAME}"
-        verify_container "${DASHBOARD_IMAGE_NAME}" "${VERSION}" "${DASHBOARD_REPO_NAME}"
-        ${DOCKER_COMPOSE_COMMAND} pull
+        SERVICE="$1"
+        VERSION="$2"
+
+        if [ -z "$VERSION" ]; then
+            VERSION="stable"
+        fi
+
+        if [ -n "$SERVICE" ]; then
+            echo "Verifying and pulling latest image for service '$SERVICE'..."
+            case "$SERVICE" in
+                relayer)
+                    IMAGE_NAME="${RELAYER_IMAGE_NAME}"
+                    REPO_NAME="${RELAYER_REPO_NAME}"
+                    ;;
+                dashboard)
+                    IMAGE_NAME="${DASHBOARD_IMAGE_NAME}"
+                    REPO_NAME="${DASHBOARD_REPO_NAME}"
+                    ;;
+                *)
+                    echo "Unknown service: $SERVICE"
+                    exit 1
+                    ;;
+            esac
+            verify_container "${IMAGE_NAME}" "${VERSION}" "${REPO_NAME}"
+            ${DOCKER_COMPOSE_COMMAND} pull "$SERVICE"
+        else
+            echo "Verifying and pulling latest images for all services..."
+            verify_container "${RELAYER_IMAGE_NAME}" "${VERSION}" "${RELAYER_REPO_NAME}"
+            verify_container "${DASHBOARD_IMAGE_NAME}" "${VERSION}" "${DASHBOARD_REPO_NAME}"
+            ${DOCKER_COMPOSE_COMMAND} pull
+        fi
         ;;
     start)
         SERVICE="$1"
