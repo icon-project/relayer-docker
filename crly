@@ -252,6 +252,10 @@ case "$COMMAND" in
             ${DOCKER_COMPOSE_COMMAND} logs -f
         fi
         ;;
+    cleanup)
+      echo "Cleaning up unused Docker resources..."
+      docker system prune -f --volumes --all
+        ;;
     *)
         CONTAINER_ID=$(${DOCKER_COMPOSE_COMMAND} ps -q relayer)
         if [ -z "$CONTAINER_ID" ]; then
