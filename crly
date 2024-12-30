@@ -47,6 +47,16 @@ verify_container() {
     fi
 }
 
+update_image_version() {
+    local SERVICE="$1"
+    local VERSION="$2"
+    if [ -z "$VERSION" ]; then
+        VERSION="stable"
+    fi
+    echo "Updating image version for service '$SERVICE' to '$VERSION'..."
+    sed -i "s/${SERVICE}_IMAGE_VERSION=.*/${SERVICE}_IMAGE_VERSION=${VERSION}/" .env
+}
+
 show_help() {
     echo "Usage: crly [COMMAND] [OPTIONS]
 
@@ -58,6 +68,7 @@ Commands:
   update [component]             Update specified component (compose-config, script, or [service])
   logs [service]                 Show logs for all services or a specific service
   verify [service] [version]     Verify container images for all services or a specific service
+  cleanup                        Clean up unused Docker resources
   --help, -h                     Show this help message
 
 Arguments:
@@ -72,6 +83,8 @@ Examples:
   crly verify relayer v1.2.3     Verify relayer image with version v1.2.3
   crly upgrade                   Upgrade all services to 'stable' version
   crly upgrade v1.2.3            Upgrade all services to version v1.2.3
+  crly update compose-config     Update docker-compose.yaml from the repository
+  crly update script             Update crly script from the repository
 "
 }
 
@@ -87,98 +100,92 @@ fi
 
 case "$COMMAND" in
     verify)
-        SERVICE="$1"
-        VERSION="$2"
-        if [ -n "$SERVICE" ]; then
+        SERVICE="${1:-all}"
+        VERSION="${2:-stable}"
             echo "Verifying image for service '$SERVICE'..."
             case "$SERVICE" in
-                relayer)
-                    IMAGE_NAME="${RELAYER_IMAGE_NAME}"
-                    REPO_NAME="${RELAYER_REPO_NAME}"
-                    ;;
-                dashboard)
-                    IMAGE_NAME="${DASHBOARD_IMAGE_NAME}"
-                    REPO_NAME="${DASHBOARD_REPO_NAME}"
-                    ;;
-                *)
-                    echo "Unknown service: $SERVICE"
-                    exit 1
-                    ;;
+              relayer)
+                IMAGE_NAME="${RELAYER_IMAGE_NAME}"
+                REPO_NAME="${RELAYER_REPO_NAME}"
+                ;;
+              dashboard)
+                IMAGE_NAME="${DASHBOARD_IMAGE_NAME}"
+                REPO_NAME="${DASHBOARD_REPO_NAME}"
+                ;;
+              all)
+                echo "Verifying images for all services..."
+                verify_container "${RELAYER_IMAGE_NAME}" "${VERSION}" "${RELAYER_REPO_NAME}"
+                verify_container "${DASHBOARD_IMAGE_NAME}" "${VERSION}" "${DASHBOARD_REPO_NAME}"
+                exit 0
+                ;;
+              *)
+                echo "Unknown service: $SERVICE"
+                exit 1
+                ;;
             esac
             verify_container "${IMAGE_NAME}" "${VERSION}" "${REPO_NAME}"
-        else
-            echo "Verifying images for all services..."
-            VERSION="$1"
-            verify_container "${RELAYER_IMAGE_NAME}" "${VERSION}" "${RELAYER_REPO_NAME}"
-            verify_container "${DASHBOARD_IMAGE_NAME}" "${VERSION}" "${DASHBOARD_REPO_NAME}"
-        fi
         ;;
     upgrade)
-        SERVICE="$1"
-        VERSION="$2"
-
-        if [ -z "$VERSION" ]; then
-            VERSION="stable"
-        fi
-
-        if [ -n "$SERVICE" ]; then
-            echo "Verifying and pulling latest image for service '$SERVICE'..."
-            case "$SERVICE" in
-                relayer)
-                    IMAGE_NAME="${RELAYER_IMAGE_NAME}"
-                    REPO_NAME="${RELAYER_REPO_NAME}"
-                    ;;
-                dashboard)
-                    IMAGE_NAME="${DASHBOARD_IMAGE_NAME}"
-                    REPO_NAME="${DASHBOARD_REPO_NAME}"
-                    ;;
-                *)
-                    echo "Unknown service: $SERVICE"
-                    exit 1
-                    ;;
+        SERVICE="${1:-all}"
+        VERSION="${2:-stable}"
+        case "$SERVICE" in
+            relayer)
+              IMAGE_NAME="${RELAYER_IMAGE_NAME}"
+              REPO_NAME="${RELAYER_REPO_NAME}"
+              ;;
+            dashboard)
+              IMAGE_NAME="${DASHBOARD_IMAGE_NAME}"
+              REPO_NAME="${DASHBOARD_REPO_NAME}"
+              ;;
+            all)
+              echo "Verifying and pulling latest images for all services..."
+              verify_container "${RELAYER_IMAGE_NAME}" "${VERSION}" "${RELAYER_REPO_NAME}" & \
+              verify_container "${DASHBOARD_IMAGE_NAME}" "${VERSION}" "${DASHBOARD_REPO_NAME}"
+              wait
+              update_image_version "relayer" "${VERSION}"
+              update_image_version "dashboard" "${VERSION}"
+              ${DOCKER_COMPOSE_COMMAND} up -d --pull always
+              exit 0
+              ;;
+            *)
+              echo "Unknown service: $SERVICE"
+              exit 1
+              ;;
             esac
             verify_container "${IMAGE_NAME}" "${VERSION}" "${REPO_NAME}"
-            ${DOCKER_COMPOSE_COMMAND} pull "$SERVICE"
-            ${DOCKER_COMPOSE_COMMAND} up -d "$SERVICE"
-        else
-            echo "Verifying and pulling latest images for all services..."
-            verify_container "${RELAYER_IMAGE_NAME}" "${VERSION}" "${RELAYER_REPO_NAME}"
-            verify_container "${DASHBOARD_IMAGE_NAME}" "${VERSION}" "${DASHBOARD_REPO_NAME}"
-            ${DOCKER_COMPOSE_COMMAND} pull
-            ${DOCKER_COMPOSE_COMMAND} up -d
-        fi
+            update_image_version "${SERVICE}" "${VERSION}"
+            ${DOCKER_COMPOSE_COMMAND} up -d "$SERVICE" --pull always
         ;;
     start)
-        SERVICE="$1"
-        VERSION="$2"
-        if [ -n "$SERVICE" ]; then
-            echo "Verifying and starting service '$SERVICE'..."
-            case "$SERVICE" in
-                relayer)
-                    IMAGE_NAME="${RELAYER_IMAGE_NAME}"
-                    REPO_NAME="${RELAYER_REPO_NAME}"
-                    ;;
-                dashboard)
-                    IMAGE_NAME="${DASHBOARD_IMAGE_NAME}"
-                    REPO_NAME="${DASHBOARD_REPO_NAME}"
-                    ;;
-                *)
-                    echo "Unknown service: $SERVICE"
-                    exit 1
-                    ;;
+        SERVICE="${1:-all}"
+        VERSION="${2:-stable}"
+        case "$SERVICE" in
+            relayer)
+                IMAGE_NAME="${RELAYER_IMAGE_NAME}"
+                REPO_NAME="${RELAYER_REPO_NAME}"
+                ;;
+            dashboard)
+                IMAGE_NAME="${DASHBOARD_IMAGE_NAME}"
+                REPO_NAME="${DASHBOARD_REPO_NAME}"
+                ;;
+            all)
+                echo "Verifying and starting all services..."
+                verify_container "${RELAYER_IMAGE_NAME}" "${VERSION}" "${RELAYER_REPO_NAME}" & \
+                verify_container "${DASHBOARD_IMAGE_NAME}" "${VERSION}" "${DASHBOARD_REPO_NAME}"
+                wait
+                ${DOCKER_COMPOSE_COMMAND} up -d
+                exit 0
+                ;;
+            *)
+                echo "Unknown service: $SERVICE"
+                exit 1
+                ;;
             esac
             verify_container "${IMAGE_NAME}" "${VERSION}" "${REPO_NAME}"
             ${DOCKER_COMPOSE_COMMAND} up -d "$SERVICE"
-        else
-            echo "Verifying and starting all services..."
-            VERSION="$1"
-            verify_container "${RELAYER_IMAGE_NAME}" "${VERSION}" "${RELAYER_REPO_NAME}"
-            verify_container "${DASHBOARD_IMAGE_NAME}" "${VERSION}" "${DASHBOARD_REPO_NAME}"
-            ${DOCKER_COMPOSE_COMMAND} up -d
-        fi
         ;;
     stop)
-        SERVICE="$1"
+        SERVICE="${1:-}"
         if [ -n "$SERVICE" ]; then
             echo "Stopping service '$SERVICE'..."
             ${DOCKER_COMPOSE_COMMAND} stop "$SERVICE"
@@ -188,17 +195,19 @@ case "$COMMAND" in
         fi
         ;;
     restart)
-        SERVICE="$1"
+        SERVICE="${1:-}"
         if [ -n "$SERVICE" ]; then
             echo "Restarting service '$SERVICE'..."
-            ${DOCKER_COMPOSE_COMMAND} restart "$SERVICE"
+            ${DOCKER_COMPOSE_COMMAND} down "$SERVICE"
+            ${DOCKER_COMPOSE_COMMAND} up -d "$SERVICE"
         else
             echo "Restarting all services..."
-            ${DOCKER_COMPOSE_COMMAND} restart
+            ${DOCKER_COMPOSE_COMMAND} down
+            ${DOCKER_COMPOSE_COMMAND} up -d
         fi
         ;;
     update)
-        SUBCOMMAND="$1"
+        SUBCOMMAND="${1:-}"
         case "$SUBCOMMAND" in
             compose-config)
                 echo "Updating docker-compose.yaml from the repository..."
@@ -220,30 +229,14 @@ case "$COMMAND" in
                 fi
                 ;;
             *)
-                SERVICE="$SUBCOMMAND"
-                VERSION="$2"
-                echo "Updating service '$SERVICE'..."
-                case "$SERVICE" in
-                    relayer)
-                        IMAGE_NAME="${RELAYER_IMAGE_NAME}"
-                        REPO_NAME="${RELAYER_REPO_NAME}"
-                        ;;
-                    dashboard)
-                        IMAGE_NAME="${DASHBOARD_IMAGE_NAME}"
-                        REPO_NAME="${DASHBOARD_REPO_NAME}"
-                        ;;
-                    *)
-                        echo "Unknown service: $SERVICE"
-                        exit 1
-                        ;;
-                esac
-                verify_container "${IMAGE_NAME}" "${VERSION}" "${REPO_NAME}"
-                ${DOCKER_COMPOSE_COMMAND} pull "$SERVICE"
+                echo "Unknown command: $SUBCOMMAND"
+                show_help
+                exit 1
                 ;;
         esac
         ;;
     logs)
-        SERVICE="$1"
+        SERVICE="${1:-}"
         if [ -n "$SERVICE" ]; then
             echo "Showing logs for service '$SERVICE'..."
             ${DOCKER_COMPOSE_COMMAND} logs -f "$SERVICE"
@@ -255,7 +248,7 @@ case "$COMMAND" in
     cleanup)
       echo "Cleaning up unused Docker resources..."
       docker system prune -f --volumes --all
-        ;;
+      ;;
     *)
         CONTAINER_ID=$(${DOCKER_COMPOSE_COMMAND} ps -q relayer)
         if [ -z "$CONTAINER_ID" ]; then
