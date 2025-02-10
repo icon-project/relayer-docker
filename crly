@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -eo pipefail
 
 CONFIG_DIR="${CONFIG_DIR:-$HOME/relayer-docker-config}"
 RELAYER_IMAGE_NAME="iconcommunity/centralized-relay"
@@ -253,7 +253,7 @@ case "$COMMAND" in
         CONTAINER_ID=$(${DOCKER_COMPOSE_COMMAND} ps -q relayer)
         if [ -z "$CONTAINER_ID" ]; then
             echo "Relayer service is not running. Starting it..."
-            VERSION="$1"
+            VERSION="${1:-stable}"
             verify_container "${RELAYER_IMAGE_NAME}" "${VERSION}" "${RELAYER_REPO_NAME}"
             ${DOCKER_COMPOSE_COMMAND} up -d relayer
             sleep 5
